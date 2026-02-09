@@ -1,26 +1,78 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Midnight Premiere Palette */
+  --background: #0c0c0c; /* Dark Space Black */
+  --foreground: #f0f0f0; /* Cloud Dancer White */
+
+  --primary: #006f87; /* Transformative Teal */
+  --accent: #ff1f8a; /* Neon Magenta / Electric Pulse */
+
+  --card: #151515;
+  --card-foreground: #f0f0f0;
+
+  --border: #1f1f1f;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-primary: var(--primary);
+  --color-accent: var(--accent);
+  --color-card: var(--card);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: "Inter", var(--font-geist-sans), sans-serif;
+
+  /* Thermal Glow & Effects */
+  --shadow-thermal:
+    0 0 20px rgba(0, 111, 135, 0.3), 0 0 40px rgba(0, 111, 135, 0.1);
+  --shadow-electric:
+    0 0 15px rgba(255, 31, 138, 0.4), 0 0 30px rgba(255, 31, 138, 0.2);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer base {
+  /* Global Interactive Elements */
+  a, 
+  button, 
+  [role="button"],
+  input[type="submit"],
+  input[type="button"],
+  select,
+  summary,
+  label[for],
+  [onclick],
+  svg,
+  .cursor-pointer {
+    cursor: pointer !important;
+  }
+}
+
+
+/* Custom Utilities */
+@layer utilities {
+  .thermal-glow {
+    box-shadow: var(--shadow-thermal);
+    border: 1px solid rgba(0, 111, 135, 0.2);
+  }
+
+  .electric-glow {
+    box-shadow: var(--shadow-electric);
+  }
+
+  .glass-card {
+    background: rgba(21, 21, 21, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .text-glow {
+    text-shadow: 0 0 10px rgba(240, 240, 240, 0.3);
+  }
 }

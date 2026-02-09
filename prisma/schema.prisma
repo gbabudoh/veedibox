@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String?
+  name      String?
+  image     String?
+  role      UserRole @default(VIEWER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tickets   Ticket[]
+}
+
+model Movie {
+  id           String        @id @default(cuid())
+  title        String
+  director     String
+  runtime      String
+  description  String
+  posterUrl    String
+  videoUrl     String?
+  status       MovieStatus   @default(COMING_SOON)
+  price        Decimal?      @db.Decimal(10, 2)
+  releaseDate  DateTime
+  liveViewers  Int           @default(0)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  interactions Interaction[]
+  tickets      Ticket[]
+}
+
+model Ticket {
+  id           String   @id @default(cuid())
+  vbxId        String   @unique
+  seatNumber   String?
+  pricePaid    Decimal  @db.Decimal(10, 2)
+  purchaseDate DateTime @default(now())
+  userId       String
+  movieId      String
+  movie        Movie    @relation(fields: [movieId], references: [id])
+  user         User     @relation(fields: [userId], references: [id])
+}
+
+model Interaction {
+  id        String   @id @default(cuid())
+  type      String
+  content   String?
+  timestamp DateTime @default(now())
+  movieId   String
+  movie     Movie    @relation(fields: [movieId], references: [id])
+}
+
+model Masterclass {
+  id           String   @id @default(cuid())
+  title        String
+  instructor   String
+  category     String
+  rating       Float    @default(0.0)
+  studentCount Int      @default(0)
+  description  String
+  thumbnailUrl String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+enum UserRole {
+  VIEWER
+  CREATOR
+  ADMIN
+}
+
+enum MovieStatus {
+  PREMIERE_LIVE
+  COMING_SOON
+  BOX_OFFICE
+}
