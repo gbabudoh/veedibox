@@ -40,47 +40,49 @@ export default function Home() {
           <div className="absolute top-1/4 -right-1/4 w-[600px] h-[600px] bg-primary/20 rounded-full blur-[120px] pointer-events-none" />
           <div className="absolute bottom-1/4 -left-1/4 w-[500px] h-[500px] bg-accent/10 rounded-full blur-[100px] pointer-events-none" />
 
-          <div className="relative z-10 max-w-5xl mx-auto">
-            <LiveBadge />
-            <motion.h1 
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-6 text-6xl md:text-8xl font-black tracking-tighter leading-[0.9] uppercase"
-            >
-              The Digital <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent text-glow">Premiere.</span>
-            </motion.h1>
-            
-            <motion.p 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="mt-8 text-xl md:text-2xl text-foreground/60 max-w-2xl leading-relaxed"
-            >
-              Experience cinema on your terms. Direct access to exclusive independent film releases, live Q&amp;As, and the world&apos;s first virtual box office.
-            </motion.p>
+          <div className="relative z-10 max-w-7xl mx-auto w-full">
+            <div className="lg:max-w-[calc(100%-450px)] xl:max-w-[calc(100%-500px)]">
+              <LiveBadge />
+              <motion.h1 
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-6 text-6xl md:text-8xl font-black tracking-tighter leading-[0.9] uppercase"
+              >
+                The Digital <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent text-glow">Premiere.</span>
+              </motion.h1>
+              
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="mt-8 text-xl md:text-2xl text-foreground/60 max-w-2xl leading-relaxed"
+              >
+                Experience cinema on your terms. Direct access to exclusive independent film releases, live Q&amp;As, and the world&apos;s first virtual box office.
+              </motion.p>
 
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.4 }}
-              className="mt-12 flex flex-col sm:flex-row gap-4"
-            >
-              <CinemaButton 
-                icon={Ticket} 
-                variant="primary"
-                onClick={() => openTicketModal()}
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.4 }}
+                className="mt-12 flex flex-col sm:flex-row gap-4"
               >
-                Get Your Ticket
-              </CinemaButton>
-              <CinemaButton 
-                icon={Play} 
-                variant="secondary"
-                onClick={() => openTrailerModal()}
-              >
-                Watch Trailer
-              </CinemaButton>
-            </motion.div>
+                <CinemaButton 
+                  icon={Ticket} 
+                  variant="primary"
+                  onClick={() => openTicketModal()}
+                >
+                  Get Your Ticket
+                </CinemaButton>
+                <CinemaButton 
+                  icon={Play} 
+                  variant="secondary"
+                  onClick={() => openTrailerModal()}
+                >
+                  Watch Trailer
+                </CinemaButton>
+              </motion.div>
+            </div>
           </div>
 
 
