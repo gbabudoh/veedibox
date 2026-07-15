@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+a:hover{opacity:0.8}
+::selection{background:oklch(58% 0.16 265 / 0.25)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
+</style>
+</helmet>
+
+<div style="font-family:'Public Sans',system-ui,sans-serif;background:{{ appBg }};color:oklch(22% 0.02 265);min-height:100vh">
+
+<!-- MODE TOGGLE (demo only) -->
+<div style="position:fixed;bottom:20px;right:20px;z-index:500;display:flex;gap:8px;background:oklch(22% 0.02 265);padding:6px;border-radius:99px;box-shadow:0 8px 24px rgba(0,0,0,0.25)">
+  <button onClick="{{ setModeStorefront }}" style="{{ storefrontToggleStyle }}">Customer</button>
+  <button onClick="{{ setModeAdmin }}" style="{{ adminToggleStyle }}">Admin</button>
+</div>
+
+<!-- ============ STOREFRONT ============ -->
+<sc-if value="{{ isStorefront }}" hint-placeholder-val="{{ true }}">
+<div>
+  <!-- NAV -->
+  <div style="position:sticky;top:0;z-index:100;background:oklch(99% 0.006 85 / 0.92);backdrop-filter:blur(10px);border-bottom:1px solid oklch(90% 0.01 85)">
+    <div style="max-width:1280px;margin:0 auto;padding:16px 32px;display:flex;align-items:center;gap:32px">
+      <div onClick="{{ goHome }}" style="cursor:pointer;font-family:Manrope,sans-serif;font-weight:800;font-size:21px;letter-spacing:-0.02em;display:flex;align-items:center;gap:8px">
+        <span style="width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg, oklch(58% 0.16 265), oklch(70% 0.13 195));display:inline-block"></span>
+        Veedibox
+      </div>
+      <div style="display:flex;gap:24px;font-size:14.5px;font-weight:600;color:oklch(40% 0.02 265)">
+        <a onClick="{{ goToWallArt }}" style="cursor:pointer">Wall Art</a>
+        <a onClick="{{ goToStock }}" style="cursor:pointer">Stock Images</a>
+        <a onClick="{{ goToTemplates }}" style="cursor:pointer">Templates</a>
+        <a onClick="{{ goToBundles }}" style="cursor:pointer">Bundles</a>
+      </div>
+      <div style="flex:1"></div>
+      <div style="display:flex;align-items:center;gap:14px">
+        <button onClick="{{ goToDashboardHandler }}" style="border:none;background:transparent;font-weight:600;font-size:14px;color:oklch(40% 0.02 265);cursor:pointer;padding:8px 4px">My Veedibox</button>
+        <button onClick="{{ toggleCart }}" style="position:relative;border:1px solid oklch(88% 0.01 85);background:#fff;border-radius:10px;padding:9px 14px;font-weight:600;font-size:14px;cursor:pointer;display:flex;align-items:center;gap:8px">
+          Cart
+          <sc-if value="{{ cartCount }}" hint-placeholder-val="{{ 0 }}">
+            <span style="background:linear-gradient(135deg, oklch(58% 0.16 265), oklch(70% 0.13 195));color:#fff;font-size:11px;font-weight:700;padding:1px 7px;border-radius:99px">{{ cartCount }}</span>
+          </sc-if>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+  <div style="animation:fadeIn 0.35s ease">
+    <div style="max-width:1280px;margin:0 auto;padding:72px 32px 64px;display:grid;grid-template-columns:1.1fr 0.9fr;gap:56px;align-items:center">
+      <div>
+        <div style="display:inline-block;font-size:12.5px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:oklch(58% 0.16 265);background:oklch(58% 0.16 265 / 0.1);padding:6px 12px;border-radius:99px;margin-bottom:20px">Modern Art &amp; Creative Assets</div>
+        <h1 style="font-family:Manrope,sans-serif;font-size:56px;font-weight:800;line-height:1.05;letter-spacing:-0.03em;margin:0 0 20px">Original art, ready-to-use assets, one gallery.</h1>
+        <p style="font-size:17px;line-height:1.6;color:oklch(45% 0.02 265);max-width:480px;margin:0 0 32px">Digital paintings, stock imagery, and templates for decor, branding, and content &mdash; curated like a gallery, delivered like a library.</p>
+        <div style="display:flex;gap:14px">
+          <button onClick="{{ goToAll }}" style="border:none;cursor:pointer;background:linear-gradient(135deg, oklch(58% 0.16 265), oklch(66% 0.14 220));color:#fff;font-weight:700;font-size:15px;padding:15px 26px;border-radius:12px;box-shadow:0 10px 24px oklch(58% 0.16 265 / 0.28)">Explore the Shop</button>
+          <button onClick="{{ goToDashboardHandler }}" style="border:1px solid oklch(85% 0.01 85);background:#fff;cursor:pointer;font-weight:700;font-size:15px;padding:15px 26px;border-radius:12px">My Veedibox</button>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;height:420px">
+        <div style="{{ heroTile1 }}"></div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="{{ heroTile2 }}flex:1"></div>
+          <div style="{{ heroTile3 }}flex:1"></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="max-width:1280px;margin:0 auto;padding:0 32px 72px">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:24px">
+        <h2 style="font-family:Manrope,sans-serif;font-size:26px;font-weight:800;letter-spacing:-0.02em;margin:0">Featured collections</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px">
+        <sc-for list="{{ collections }}" as="c" hint-placeholder-count="4">
+          <div onClick="{{ c.onClick }}" style="cursor:pointer;border-radius:16px;overflow:hidden;border:1px solid oklch(91% 0.01 85);background:#fff;transition:transform 0.2s">
+            <div style="{{ c.bg }}height:150px"></div>
+            <div style="padding:16px">
+              <div style="font-weight:700;font-size:15px;margin-bottom:4px">{{ c.title }}</div>
+              <div style="font-size:13px;color:oklch(48% 0.02 265)">{{ c.count }} items</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="background:oklch(22% 0.02 265);color:#fff;padding:56px 32px;margin:0 0 72px">
+      <div style="max-width:1280px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center">
+        <div>
+          <div style="font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:oklch(75% 0.1 195);margin-bottom:14px">Stock with soul</div>
+          <div style="font-family:Manrope,sans-serif;font-size:30px;font-weight:800;line-height:1.25;letter-spacing:-0.02em">Original visuals for indie brands &mdash; not generic corporate stock.</div>
+        </div>
+        <p style="font-size:15.5px;line-height:1.7;color:oklch(80% 0.01 265);margin:0">Curated photo packs, illustration sets, and textures made for founders and creators who want their brand to look distinct from day one.</p>
+      </div>
+    </div>
+
+    <div style="max-width:1280px;margin:0 auto;padding:0 32px 96px">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:24px">
+        <h2 style="font-family:Manrope,sans-serif;font-size:26px;font-weight:800;letter-spacing:-0.02em;margin:0">Trending now</h2>
+        <a onClick="{{ goToAll }}" style="cursor:pointer;font-weight:700;font-size:14px;color:oklch(58% 0.16 265)">View all &rarr;</a>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px">
+        <sc-for list="{{ trendingProducts }}" as="p" hint-placeholder-count="4">
+          <dc-import name="ProductCard" p="{{ p }}" on-open="{{ openProduct }}" on-add="{{ quickAdd }}" hint-size="100%,290px"></dc-import>
+        </sc-for>
+      </div>
+    </div>
+    {{ footer }}
+  </div>
+  </sc-if>
+
+  <!-- SHOP -->
+  <sc-if value="{{ isShop }}" hint-placeholder-val="{{ false }}">
+  <div style="max-width:1280px;margin:0 auto;padding:40px 32px 96px;display:grid;grid-template-columns:260px 1fr;gap:36px;animation:fadeIn 0.35s ease">
+    <div>
+      <div style="font-weight:800;font-family:Manrope,sans-serif;font-size:14px;margin-bottom:14px">Category</div>
+      <div style="display:flex;flex-direction:column;gap:2px;margin-bottom:28px">
+        <sc-for list="{{ categoryFilters }}" as="cat" hint-placeholder-count="5">
+          <button onClick="{{ cat.onClick }}" style="{{ cat.style }}">{{ cat.label }}</button>
+        </sc-for>
+      </div>
+      <div style="font-weight:800;font-family:Manrope,sans-serif;font-size:14px;margin-bottom:14px">Style</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px">
+        <sc-for list="{{ styleFilters }}" as="s" hint-placeholder-count="6">
+          <button onClick="{{ s.onClick }}" style="{{ s.style }}">{{ s.key }}</button>
+        </sc-for>
+      </div>
+      <div style="font-weight:800;font-family:Manrope,sans-serif;font-size:14px;margin-bottom:14px">Use case</div>
+      <div style="display:flex;flex-direction:column;gap:8px;font-size:13.5px;color:oklch(45% 0.02 265)">
+        <div>Home &amp; office decor</div>
+        <div>Web &amp; social branding</div>
+        <div>Print &amp; merch</div>
+      </div>
+    </div>
+    <div>
+      <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:24px">
+        <h1 style="font-family:Manrope,sans-serif;font-size:26px;font-weight:800;letter-spacing:-0.02em;margin:0">{{ shopTitle }}</h1>
+        <div style="font-size:13.5px;color:oklch(48% 0.02 265)">{{ shopResultCount }} results</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px">
+        <sc-for list="{{ filteredProducts }}" as="p" hint-placeholder-count="6">
+          <dc-import name="ProductCard" p="{{ p }}" on-open="{{ openProduct }}" on-add="{{ quickAdd }}" hint-size="100%,290px"></dc-import>
+        </sc-for>
+      </div>
+      <sc-if value="{{ shopEmpty }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:60px 0;text-align:center;color:oklch(50% 0.02 265);font-size:14px">No items match these filters yet.</div>
+      </sc-if>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- PRODUCT DETAIL -->
+  <sc-if value="{{ isProduct }}" hint-placeholder-val="{{ false }}">
+  <div style="max-width:1280px;margin:0 auto;padding:32px 32px 96px;animation:fadeIn 0.35s ease">
+    <div style="font-size:13px;color:oklch(48% 0.02 265);margin-bottom:20px">
+      <a onClick="{{ goHome }}" style="cursor:pointer">Home</a> / <a onClick="{{ activeProduct.onCategoryClick }}" style="cursor:pointer">{{ activeProduct.categoryLabel }}</a> / {{ activeProduct.title }}
+    </div>
+    <div style="display:grid;grid-template-columns:1.1fr 0.9fr;gap:56px">
+      <div>
+        <div style="{{ activeProduct.bg }}height:480px;border-radius:20px"></div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px">
+          <sc-for list="{{ activeProduct.thumbs }}" as="t" hint-placeholder-count="4">
+            <div style="{{ t }}height:80px;border-radius:10px"></div>
+          </sc-for>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:700;color:oklch(58% 0.16 265);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px">{{ activeProduct.style }}</div>
+        <h1 style="font-family:Manrope,sans-serif;font-size:32px;font-weight:800;letter-spacing:-0.02em;margin:0 0 14px">{{ activeProduct.title }}</h1>
+        <div style="font-size:28px;font-weight:800;margin-bottom:18px">${{ licensedPrice }}</div>
+        <p style="font-size:15px;line-height:1.7;color:oklch(42% 0.02 265);margin:0 0 24px">{{ activeProduct.description }}</p>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;font-size:12.5px;color:oklch(45% 0.02 265);border-top:1px solid oklch(90% 0.01 85);border-bottom:1px solid oklch(90% 0.01 85);padding:16px 0;margin-bottom:24px">
+          <div><div style="font-weight:700;color:oklch(22% 0.02 265)">Formats</div>{{ activeProduct.formats }}</div>
+          <div><div style="font-weight:700;color:oklch(22% 0.02 265)">Dimensions</div>{{ activeProduct.dimensions }}</div>
+          <div><div style="font-weight:700;color:oklch(22% 0.02 265)">File size</div>{{ activeProduct.fileSize }}</div>
+        </div>
+        <div style="font-weight:700;font-size:14px;margin-bottom:12px">Choose a licence</div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:26px">
+          <sc-for list="{{ licenseOptions }}" as="lic" hint-placeholder-count="3">
+            <div onClick="{{ lic.onClick }}" style="{{ lic.style }}">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div><div style="font-weight:700;font-size:14px">{{ lic.label }}</div><div style="font-size:12.5px;color:oklch(48% 0.02 265)">{{ lic.desc }}</div></div>
+                <div style="font-weight:700;font-size:14px">{{ lic.priceLabel }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex;gap:12px">
+          <button onClick="{{ addActiveToCart }}" style="flex:1;border:1px solid oklch(85% 0.01 85);background:#fff;font-weight:700;font-size:15px;padding:15px;border-radius:12px;cursor:pointer">Add to cart</button>
+          <button onClick="{{ buyActiveNow }}" style="flex:1;border:none;background:linear-gradient(135deg, oklch(58% 0.16 265), oklch(66% 0.14 220));color:#fff;font-weight:700;font-size:15px;padding:15px;border-radius:12px;cursor:pointer;box-shadow:0 10px 24px oklch(58% 0.16 265 / 0.28)">Buy now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- CHECKOUT -->
+  <sc-if value="{{ isCheckout }}" hint-placeholder-val="{{ false }}">
+  <div style="max-width:1000px;margin:0 auto;padding:48px 32px 96px;display:grid;grid-template-columns:1.2fr 0.8fr;gap:44px;animation:fadeIn 0.35s ease">
+    <div>
+      <h1 style="font-family:Manrope,sans-serif;font-size:26px;font-weight:800;letter-spacing:-0.02em;margin:0 0 24px">Checkout</h1>
+      <div style="font-size:13px;font-weight:700;margin-bottom:8px">Email</div>
+      <input value="you@studio.com" readOnly="{{ true }}" style="width:100%;box-sizing:border-box;padding:13px 14px;border-radius:10px;border:1px solid oklch(85% 0.01 85);font-size:14px;margin-bottom:22px"></input>
+      <div style="font-size:13px;font-weight:700;margin-bottom:10px">Payment method</div>
+      <div style="display:flex;gap:10px;margin-bottom:26px">
+        <div style="flex:1;border:2px solid oklch(58% 0.16 265);border-radius:12px;padding:16px;font-weight:700;font-size:14px;background:oklch(58% 0.16 265 / 0.06)">Stripe</div>
+        <div style="flex:1;border:1px solid oklch(88% 0.01 85);border-radius:12px;padding:16px;font-weight:700;font-size:14px;color:oklch(50% 0.02 265)">PayPal</div>
+      </div>
+      <button onClick="{{ completeCheckout }}" style="width:100%;border:none;background:linear-gradient(135deg, oklch(58% 0.16 265), oklch(66% 0.14 220));color:#fff;font-weight:700;font-size:15px;padding:16px;border-radius:12px;cursor:pointer;box-shadow:0 10px 24px oklch(58% 0.16 265 / 0.28)">Pay ${{ cartTotal }}</button>
+    </div>
+    <div style="background:oklch(97% 0.006 85);border-radius:16px;padding:24px;height:fit-content">
+      <div style="font-weight:800;font-size:14px;margin-bottom:16px">Order summary</div>
+      <sc-for list="{{ cartDetails }}" as="ci" hint-placeholder-count="2">
+        <div style="display:flex;justify-content:space-between;font-size:13.5px;padding:8px 0;border-bottom:1px solid oklch(91% 0.01 85)">
+          <span>{{ ci.title }} <span style="color:oklch(50% 0.02 265)">({{ ci.licenseLabel }})</span></span>
+          <span style="font-weight:700">${{ ci.price }}</span>
+        </div>
+      </sc-for>
+      <div style="display:flex;justify-content:space-between;font-weight:800;font-size:16px;padding-top:14px">
+        <span>Total</span><span>${{ cartTotal }}</span>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- CONFIRMATION -->
+  <sc-if value="{{ isConfirmation }}" hint-placeholder-val="{{ false }}">
+  <div style="max-width:600px;margin:0 auto;padding:100px 32px;text-align:center;animation:fadeIn 0.35s ease">
+    <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg, oklch(58% 0.16 265), oklch(70% 0.13 195));margin:0 auto 24px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:28px;font-weight:800">&#10003;</div>
+    <h1 style="font-family:Manrope,sans-serif;font-size:26px;font-weight:800;margin:0 0 12px">Order confirmed</h1>
+    <p style="font-size:14.5px;color:oklch(45% 0.02 265);line-height:1.6;margin:0 0 28px">Your files are ready. We've also emailed you a receipt and download links.</p>
+    <button onClick="{{ goToDashboardHandler }}" style="border:none;background:linear-gradient(135deg, oklch(58% 0.16 265), oklch(66% 0.14 220));color:#fff;font-weight:700;font-size:15px;padding:15px 26px;border-radius:12px;cursor:pointer">Go to My Veedibox</button>
+  </div>
+  </sc-if>
+
+  <!-- DASHBOARD -->
+  <sc-if value="{{ isDashboard }}" hint-placeholder-val="{{ false }}">
+  <div style="max-width:1280px;margin:0 auto;padding:40px 32px 96px;display:grid;grid-template-columns:220px 1fr;gap:40px;animation:fadeIn 0.35s ease">
+    <div>
+      <div style="font-family:Manrope,sans-serif;font-weight:800;font-size:20px;margin-bottom:22px">My Veedibox</div>
+      <sc-for list="{{ dashTabs }}" as="t" hint-placeholder-count="3">
+        <button onClick="{{ t.onClick }}" style="{{ t.style }}">{{ t.label }}</button>
+      </sc-for>
+    </div>
+    <div>
+      <sc-if value="{{ isDashPurchases }}" hint-placeholder-val="{{ true }}">
+        <h1 style="font-family:Manrope,sans-serif;font-size:24px;font-weight:800;margin:0 0 20px">Purchases</h1>
+        <div style="border:1px solid oklch(91% 0.01 85);border-radius:14px;overflow:hidden">
+          <div style="display:grid;grid-template-columns:1fr 100px 100px 110px;padding:14px 18px;font-size:12px;font-weight:700;color:oklch(50% 0.02 265);text-transform:uppercase;letter-spacing:0.04em;background:oklch(97% 0.006 85)">
+            <div>Order</div><div>Items</div><div>Total</div><div>Status</div>
+          </div>
+          <sc-for list="{{ myOrders }}" as="o" hint-placeholder-count="3">
+            <div style="display:grid;grid-template-columns:1fr 100px 100px 110px;padding:14px 18px;font-size:13.5px;border-top:1px solid oklch(93% 0.01 85);align-items:center">
+              <div><div style="font-weight:700">{{ o.id }}</div><div style="font-size:12px;color:oklch(50% 0.02 265)">{{ o.date }}</div></div>
+              <div>{{ o.items }}</div>
+              <div style="font-weight:700">${{ o.total }}</div>
+              <div><span style="{{ o.badgeStyle }}">{{ o.status }}</span></div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{ isDashDownloads }}" hint-placeholder-val="{{ false }}">
+        <h1 style="font-family:Manrope,sans-serif;font-size:24px;font-weight:800;margin:0 0 20px">Downloads</h1>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+          <sc-for list="{{ myDownloads }}" as="d" hint-placeholder-count="4">
+            <div style="border:1px solid oklch(91% 0.01 85);border-radius:14px;overflow:hidden;background:#fff">
+              <div style="{{ d.bg }}height:120px"></div>
+              <div style="padding:14px">
+                <div style="font-weight:700;font-size:13.5px;margin-bottom:6px">{{ d.title }}</div>
+                <div style="font-size:11.5px;color:oklch(50% 0.02 265);margin-bottom:10px">Licence: {{ d.license }}</div>
+                <button style="width:100%;border:none;background:oklch(22% 0.02 265);color:#fff;font-weight:700;font-size:12.5px;padding:9px;border-radius:8px;cursor:pointer">Download</button>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{ isDashSettings }}" hint-placeholder-val="{{ false }}">
+        <h1 style="font-family:Manrope,sans-serif;font-size:24px;font-weight:800;margin:0 0 20px">Settings</h1>
+        <div style="max-width:420px;display:flex;flex-direction:column;gap:14px">
+          <div><div style="font-size:12.5px;font-weight:700;margin-bottom:6px">Name</div><input value="Amara Okafor" readOnly="{{ true }}" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1px solid oklch(85% 0.01 85);font-size:14px"></input></div>
+          <div><div style="font-size:12.5px;font-weight:700;margin-bottom:6px">Email</div><input value="amara@studio.com" readOnly="{{ true }}" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1px solid oklch(85% 0.01 85);font-size:14px"></input></div>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- CART DRAWER -->
+  <sc-if value="{{ cartOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ toggleCart }}" style="position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:200"></div>
+    <div style="position:fixed;top:0;right:0;bottom:0;width:400px;background:#fff;z-index:201;box-shadow:-12px 0 40px rgba(0,0,0,0.15);display:flex;flex-direction:column;animation:slideIn 0.25s ease">
+      <div style="padding:22px 24px;border-bottom:1px solid oklch(91% 0.01 85);display:flex;justify-content:space-between;align-items:center">
+        <div style="font-weight:800;font-size:16px">Your cart</div>
+        <button onClick="{{ toggleCart }}" style="border:none;background:none;font-size:18px;cursor:pointer">&times;</button>
+      </div>
+      <div style="flex:1;overflow:auto;padding:16px 24px">
+        <sc-if value="{{ cartEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:60px 0;text-align:center;color:oklch(50% 0.02 265);font-size:13.5px">Your cart is empty.</div>
+        </sc-if>
+        <sc-for list="{{ cartDetails }}" as="ci" hint-placeholder-count="0">
+          <div style="display:flex;gap:12px;padding:14px 0;border-bottom:1px solid oklch(93% 0.01 85)">
+            <div style="{{ ci.bg }}width:56px;height:56px;border-radius:8px;flex:none"></div>
+            <div style="flex:1">
+              <div style="font-weight:700;font-size:13.5px">{{ ci.title }}</div>
+              <div style="font-size:12px;color:oklch(50% 0.02 265)">{{ ci.licenseLabel }}</div>
+            </div>
+            <div style="font-weight:700;font-size:13.5px">${{ ci.price }}</div>
+            <button onClick="{{ ci.onRemove }}" style="border:none;background:none;color:oklch(55% 0.02 265);cursor:pointer;font-size:13px">&times;</button>
+          </div>
+        </sc-for>
+      </div>
+      <div style="padding:20px 24px;border-top:1px solid oklch(91% 0.01 85)">
+        <div style="display:flex;justify-content:space-between;font-weight:800;font-size:16px;margin-bottom:14px"><span>Total</span><span>${{ cartTotal }}</span></div>
+        <button onClick="{{ goToCheckout }}" style="width:100%;border:none;background:linear-gradient(135deg, oklch(58% 0.16 265), oklch(66% 0.14 220));color:#fff;font-weight:700;font-size:15px;padding:15px;border-radius:12px;cursor:pointer">Checkout</button>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</sc-if>
+
+<!-- ============ ADMIN ============ -->
+<sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ false }}">
+<div style="display:grid;grid-template-columns:240px 1fr;min-height:100vh">
+  <div style="background:oklch(19% 0.02 265);color:#fff;padding:24px 18px;display:flex;flex-direction:column">
+    <div style="font-family:Manrope,sans-serif;font-weight:800;font-size:19px;display:flex;align-items:center;gap:8px;margin-bottom:36px;padding:0 6px">
+      <span style="width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg, oklch(58% 0.16 265), oklch(70% 0.13 195));display:inline-block"></span>
+      Veedibox <span style="font-size:11px;font-weight:700;color:oklch(70% 0.1 195);background:rgba(255,255,255,0.08);padding:2px 8px;border-radius:6px">ADMIN</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:2px">
+      <sc-for list="{{ adminTabs }}" as="t" hint-placeholder-count="4">
+        <button onClick="{{ t.onClick }}" style="{{ t.style }}">{{ t.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+  <div style="background:oklch(97% 0.006 85);padding:36px 40px;overflow:auto">
+    <!-- PRODUCTS -->
+    <sc-if value="{{ isAdminProducts }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+        <h1 style="font-family:Manrope,sans-serif;font-size:24px;font-weight:800;margin:0">Products</h1>
+        <button onClick="{{ openAddProduct }}" style="border:none;background:linear-gradient(135deg, oklch(58% 0.16 265), oklch(66% 0.14 220));color:#fff;font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:10px;cursor:pointer">+ Add product</button>
+      </div>
+      <div style="background:#fff;border:1px solid oklch(91% 0.01 85);border-radius:14px;overflow:hidden">
+        <div style="display:grid;grid-template-columns:56px 2fr 1fr 1fr 90px 130px;padding:12px 18px;font-size:11.5px;font-weight:700;color:oklch(50% 0.02 265);text-transform:uppercase;letter-spacing:0.04em;background:oklch(97% 0.006 85)">
+          <div></div><div>Product</div><div>Category</div><div>Style</div><div>Price</div><div>Actions</div>
+        </div>
+        <sc-for list="{{ products }}" as="p" hint-placeholder-count="6">
+          <div style="display:grid;grid-template-columns:56px 2fr 1fr 1fr 90px 130px;padding:10px 18px;font-size:13.5px;border-top:1px solid oklch(93% 0.01 85);align-items:center">
+            <div style="{{ p.bg }}width:36px;height:36px;border-radius:8px"></div>
+            <div style="font-weight:700">{{ p.title }}</div>
+            <div style="color:oklch(48% 0.02 265)">{{ p.categoryLabel }}</div>
+            <div style="color:oklch(48% 0.02 265)">{{ p.style }}</div>
+            <div style="font-weight:700">${{ p.price }}</div>
+            <div style="display:flex;gap:8px">
+              <button onClick="{{ p.onEdit }}" style="border:1px solid oklch(88% 0.01 85);background:#fff;font-size:12px;font-weight:700;padding:6px 10px;border-radius:7px;cursor:pointer">Edit</button>
+              <button onClick="{{ p.onDelete }}" style="border:1px solid oklch(85% 0.08 25);color:oklch(50% 0.18 25);background:#fff;font-size:12px;font-weight:700;padding:6px 10px;border-radius:7px;cursor:pointer">Delete</button>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+    <!-- ORDERS -->
+    <sc-if value="{{ isAdminOrders }}" hint-placeholder-val="{{ false }}">
+      <h1 style="font-family:Manrope,sans-serif;font-size:24px;font-weight:800;margin:0 0 24px">Orders</h1>
+      <div style="background:#fff;border:1px solid oklch(91% 0.01 85);border-radius:14px;overflow:hidden">
+        <div style="display:grid;grid-template-columns:1fr 1.4fr 1fr 90px 120px;padding:12px 18px;font-size:11.5px;font-weight:700;color:oklch(50% 0.02 265);text-transform:uppercase;letter-spacing:0.04em;background:oklch(97% 0.006 85)">
+          <div>Order</div><div>Customer</div><div>Date</div><div>Total</div><div>Status</div>
+        </div>
+        <sc-for list="{{ orders }}" as="o" hint-placeholder-count="6">
+          <div style="display:grid;grid-template-columns:1fr 1.4fr 1fr 90px 120px;padding:12px 18px;font-size:13.5px;border-top:1px solid oklch(93% 0.01 85);align-items:center">
+            <div style="font-weight:700">{{ o.id }}</div>
+            <div>{{ o.customer }}</div>
+            <div style="color:oklch(48% 0.02 265)">{{ o.date }}</div>
+            <div style="font-weight:700">${{ o.total }}</div>
+            <div><span style="{{ o.badgeStyle }}">{{ o.status }}</span></div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+    <!-- USERS -->
+    <sc-if value="{{ isAdminUsers }}" hint-placeholder-val="{{ false }}">
+      <h1 style="font-family:Manrope,sans-serif;font-size:24px;font-weight:800;margin:0 0 24px">Users</h1>
+      <div style="background:#fff;border:1px solid oklch(91% 0.01 85);border-radius:14px;overflow:hidden">
+        <div style="display:grid;grid-template-columns:1.4fr 1.4fr 1fr 1fr;padding:12px 18px;font-size:11.5px;font-weight:700;color:oklch(50% 0.02 265);text-transform:uppercase;letter-spacing:0.04em;background:oklch(97% 0.006 85)">
+          <div>Name</div><div>Email</div><div>Role</div><div>Joined</div>
+        </div>
+        <sc-for list="{{ users }}" as="u" hint-placeholder-count="5">
+          <div style="display:grid;grid-template-columns:1.4fr 1.4fr 1fr 1fr;padding:12px 18px;font-size:13.5px;border-top:1px solid oklch(93% 0.01 85);align-items:center">
+            <div style="font-weight:700">{{ u.name }}</div>
+            <div style="color:oklch(48% 0.02 265)">{{ u.email }}</div>
+            <div><span style="{{ u.roleStyle }}">{{ u.role }}</span></div>
+            <div style="color:oklch(48% 0.02 265)">{{ u.joined }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+    <!-- ANALYTICS -->
+    <sc-if value="{{ isAdminAnalytics }}" hint-placeholder-val="{{ false }}">
+      <h1 style="font-family:Manrope,sans-serif;font-size:24px;font-weight:800;margin:0 0 24px">Analytics</h1>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px">
+        <sc-for list="{{ statCards }}" as="s" hint-placeholder-count="4">
+          <div style="background:#fff;border:1px solid oklch(91% 0.01 85);border-radius:14px;padding:20px">
+            <div style="font-size:12px;font-weight:700;color:oklch(50% 0.02 265);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:10px">{{ s.label }}</div>
+            <div style="font-family:Manrope,sans-serif;font-size:26px;font-weight:800">{{ s.value }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="background:#fff;border:1px solid oklch(91% 0.01 85);border-radius:14px;padding:24px">
+        <div style="font-weight:800;font-size:14px;margin-bottom:20px">Revenue by month</div>
+        <div style="display:flex;align-items:flex-end;gap:16px;height:180px">
+          <sc-for list="{{ revenueBars }}" as="b" hint-placeholder-count="6">
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;height:100%;justify-content:flex-end">
+              <div style="width:100%;border-radius:6px 6px 0 0;background:linear-gradient(180deg, oklch(66% 0.14 220), oklch(58% 0.16 265));height:{{ b.heightPct }}%"></div>
+              <div style="font-size:11.5px;color:oklch(50% 0.02 265);font-weight:600">{{ b.label }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+</div>
+
+<!-- ADD/EDIT PRODUCT MODAL -->
+<sc-if value="{{ showProductModal }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeModal }}" style="position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:300"></div>
+  <div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:480px;max-height:86vh;overflow:auto;background:#fff;border-radius:18px;z-index:301;padding:28px;box-shadow:0 30px 80px rgba(0,0,0,0.3)">
+    <div style="font-family:Manrope,sans-serif;font-weight:800;font-size:19px;margin-bottom:20px">{{ modalTitle }}</div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div><div style="font-size:12.5px;font-weight:700;margin-bottom:6px">Title</div>
+        <input value="{{ formDraft.title }}" onChange="{{ onTitleChange }}" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1px solid oklch(85% 0.01 85);font-size:14px"></input></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div><div style="font-size:12.5px;font-weight:700;margin-bottom:6px">Category</div>
+          <select value="{{ formDraft.category }}" onChange="{{ onCategoryChange }}" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1px solid oklch(85% 0.01 85);font-size:14px">
+            <option value="wall-art">Wall Art</option>
+            <option value="stock">Stock Images</option>
+            <option value="templates">Templates</option>
+            <option value="bundles">Bundles</option>
+          </select></div>
+        <div><div style="font-size:12.5px;font-weight:700;margin-bottom:6px">Style</div>
+          <input value="{{ formDraft.style }}" onChange="{{ onStyleChange }}" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1px solid oklch(85% 0.01 85);font-size:14px"></input></div>
+      </div>
+      <div><div style="font-size:12.5px;font-weight:700;margin-bottom:6px">Price (USD)</div>
+        <input type="number" value="{{ formDraft.price }}" onChange="{{ onPriceChange }}" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1px solid oklch(85% 0.01 85);font-size:14px"></input></div>
+      <div><div style="font-size:12.5px;font-weight:700;margin-bottom:6px">Preview file</div>
+        <div style="border:2px dashed oklch(85% 0.01 85);border-radius:12px;padding:20px;text-align:center;font-size:12.5px;color:oklch(50% 0.02 265);font-family:monospace">drop image asset here</div></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:24px">
+      <button onClick="{{ closeModal }}" style="flex:1;border:1px solid oklch(85% 0.01 85);background:#fff;font-weight:700;font-size:14px;padding:13px;border-radius:10px;cursor:pointer">Cancel</button>
+      <button onClick="{{ saveProduct }}" style="flex:1;border:none;background:linear-gradient(135deg, oklch(58% 0.16 265), oklch(66% 0.14 220));color:#fff;font-weight:700;font-size:14px;padding:13px;border-radius:10px;cursor:pointer">Save product</button>
+    </div>
+  </div>
+</sc-if>
+</sc-if>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const PRODUCTS_SEED = [
+  {id:1, title:"Ochre Fields Abstract", category:'wall-art', style:'Abstract', price:24, hue:32, desc:"A warm abstract composition of layered ochre and rust tones, printed on museum-grade paper. Great for living rooms and creative studios.", formats:"JPG, PNG, TIFF", dimensions:"3 sizes, up to 24x36in", fileSize:"48 MB"},
+  {id:2, title:"Line Study No.3", category:'wall-art', style:'Minimalist', price:18, hue:212, desc:"A single continuous line rendered in cool blue-greys. Minimalist wall art for calm, modern interiors.", formats:"JPG, PNG", dimensions:"4 sizes, up to 30x40in", fileSize:"32 MB"},
+  {id:3, title:"Monstera Botanical Set", category:'wall-art', style:'Botanical', price:22, hue:142, desc:"A set of three botanical studies in deep greens, ideal for gallery walls and biophilic office decor.", formats:"JPG, PNG, PDF", dimensions:"Set of 3, 18x24in", fileSize:"56 MB"},
+  {id:4, title:"Rise & Build Quote Print", category:'wall-art', style:'Typography', price:16, hue:346, desc:"Bold motivational typography in warm coral, designed for founder desks and startup offices.", formats:"JPG, PNG", dimensions:"3 sizes, up to 20x30in", fileSize:"24 MB"},
+  {id:5, title:"African Market Stock Pack", category:'stock', style:'Lifestyle', price:39, hue:24, desc:"40 original lifestyle photographs from African markets and street scenes, licensed for commercial use.", formats:"JPG (high-res)", dimensions:"40 images, 4000x6000px", fileSize:"1.2 GB"},
+  {id:6, title:"Founder Desk Tech Pack", category:'stock', style:'Tech', price:34, hue:252, desc:"25 clean workspace and tech-product shots for SaaS landing pages and pitch decks.", formats:"JPG (high-res)", dimensions:"25 images, 4000x6000px", fileSize:"860 MB"},
+  {id:7, title:"Texture & Grain Backgrounds", category:'stock', style:'Texture', price:19, hue:58, desc:"A pack of paper, fabric, and concrete textures for backgrounds and overlays.", formats:"JPG, PNG", dimensions:"30 textures, 3000x3000px", fileSize:"640 MB"},
+  {id:8, title:"Social Carousel Kit", category:'templates', style:'Social', price:14, hue:282, desc:"12 editable carousel templates for Instagram and LinkedIn, built for fast branded posting.", formats:"Canva, PSD", dimensions:"1080x1350px", fileSize:"140 MB"},
+  {id:9, title:"Minimal Brand Sheet", category:'templates', style:'Branding', price:12, hue:192, desc:"A simple one-page brand sheet template: logo lockup, palette, and type scale placeholders.", formats:"PSD, PDF", dimensions:"A4 / Letter", fileSize:"18 MB"},
+  {id:10, title:"Founder Office Bundle", category:'bundles', style:'Bundle', price:59, hue:12, desc:"A curated bundle of wall art and quote prints for the modern founder's office.", formats:"JPG, PNG, PDF", dimensions:"Mixed sizes", fileSize:"180 MB"}
+];
+const ORDERS_SEED = [
+  {id:'#VB-1042', customer:'Amara Okafor', date:'Jul 11, 2026', total:64, status:'Paid'},
+  {id:'#VB-1041', customer:'Tomiwa Bello', date:'Jul 10, 2026', total:22, status:'Paid'},
+  {id:'#VB-1040', customer:'Jasmine Ruiz', date:'Jul 9, 2026', total:39, status:'Refunded'},
+  {id:'#VB-1039', customer:'Priya Shah', date:'Jul 8, 2026', total:126, status:'Paid'},
+  {id:'#VB-1038', customer:'Leon Marchetti', date:'Jul 7, 2026', total:16, status:'Pending'},
+  {id:'#VB-1037', customer:'Nadia Petrov', date:'Jul 6, 2026', total:59, status:'Paid'}
+];
+const USERS_SEED = [
+  {id:1, name:'Amara Okafor', email:'amara@studio.com', role:'Customer', joined:'Mar 2026'},
+  {id:2, name:'Sade Williams', email:'sade@veedibox.com', role:'Admin', joined:'Jan 2026'},
+  {id:3, name:'Tomiwa Bello', email:'tomiwa@bello.co', role:'Customer', joined:'Apr 2026'},
+  {id:4, name:'Jasmine Ruiz', email:'jasmine@ruiz.design', role:'Creator', joined:'Feb 2026'},
+  {id:5, name:'Priya Shah', email:'priya@shah.io', role:'Customer', joined:'May 2026'}
+];
+const CATEGORY_LABELS = {'wall-art':'Wall Art', stock:'Stock Images', templates:'Templates', bundles:'Bundles', all:'All Products'};
+const LICENSE_MULT = {personal:1, commercial:2.5, extended:5};
+const LICENSE_META = {personal:{label:'Personal use', desc:'Home & personal decor only'}, commercial:{label:'Commercial use', desc:'Branding, social, and web use'}, extended:{label:'Extended use', desc:'Resale & merch production'}};
+
+function bgFor(hue){
+  return 'background:repeating-linear-gradient(135deg, rgba(255,255,255,0.14) 0 2px, transparent 2px 14px), linear-gradient(135deg, oklch(88% 0.06 ' + hue + '), oklch(68% 0.11 ' + (hue+45) + '));';
+}
+
+class Component extends DCLogic {
+  state = {
+    mode: 'storefront',
+    page: 'home',
+    shopCategory: 'all',
+    selectedStyles: [],
+    activeProductId: 1,
+    selectedLicense: 'personal',
+    cartItems: [],
+    cartOpen: false,
+    dashTab: 'purchases',
+    adminTab: 'products',
+    products: PRODUCTS_SEED.map(p => ({...p})),
+    orders: ORDERS_SEED,
+    users: USERS_SEED,
+    showProductModal: false,
+    editingProductId: null,
+    formDraft: {title:'', category:'wall-art', style:'', price:0}
+  };
+
+  setMode(m){ this.setState({mode:m, page:'home', adminTab:'products'}); }
+  goTo(page){ this.setState({page, cartOpen:false}); window.scrollTo(0,0); }
+  goToShop(cat){ this.setState({page:'shop', shopCategory:cat, selectedStyles:[], cartOpen:false}); }
+  setShopCategory(cat){ this.setState({shopCategory:cat, selectedStyles:[]}); }
+  toggleStyle(s){ this.setState(st => ({selectedStyles: st.selectedStyles.includes(s) ? st.selectedStyles.filter(x=>x!==s) : [...st.selectedStyles, s]})); }
+  openProduct(id){ this.setState({page:'product', activeProductId:id, selectedLicense:'personal', cartOpen:false}); window.scrollTo(0,0); }
+  setLicense(l){ this.setState({selectedLicense:l}); }
+  toggleCart(){ this.setState(st => ({cartOpen: !st.cartOpen})); }
+  quickAdd(id){ this.setState(st => ({cartItems:[...st.cartItems, {productId:id, license:'personal'}], cartOpen:true})); }
+  addActiveToCart(){ this.setState(st => ({cartItems:[...st.cartItems, {productId:st.activeProductId, license:st.selectedLicense}], cartOpen:true})); }
+  buyActiveNow(){ this.setState(st => ({cartItems:[...st.cartItems, {productId:st.activeProductId, license:st.selectedLicense}], page:'checkout', cartOpen:false})); window.scrollTo(0,0); }
+  removeFromCart(i){ this.setState(st => ({cartItems: st.cartItems.filter((_,idx)=>idx!==i)})); }
+  goToCheckout(){ this.setState({page:'checkout', cartOpen:false}); window.scrollTo(0,0); }
+  completeCheckout(){ this.setState({page:'confirmation', cartItems:[]}); window.scrollTo(0,0); }
+  setDashTab(t){ this.setState({dashTab:t}); }
+  setAdminTab(t){ this.setState({adminTab:t}); }
+
+  openAddProduct(){ this.setState({showProductModal:true, editingProductId:null, formDraft:{title:'', category:'wall-art', style:'', price:20}}); }
+  openEditProduct(id){
+    const p = this.state.products.find(x=>x.id===id);
+    this.setState({showProductModal:true, editingProductId:id, formDraft:{title:p.title, category:p.category, style:p.style, price:p.price}});
+  }
+  closeModal(){ this.setState({showProductModal:false}); }
+  updateField(field, value){ this.setState(st => ({formDraft:{...st.formDraft, [field]:value}})); }
+  saveProduct(){
+    this.setState(st => {
+      const d = st.formDraft;
+      if (st.editingProductId){
+        return {products: st.products.map(p => p.id===st.editingProductId ? {...p, title:d.title, category:d.category, style:d.style, price:Number(d.price)||0} : p), showProductModal:false};
+      }
+      const newId = Math.max(0, ...st.products.map(p=>p.id)) + 1;
+      const hue = (newId * 37) % 360;
+      return {products:[...st.products, {id:newId, title:d.title||'Untitled', category:d.category, style:d.style||'General', price:Number(d.price)||0, hue, desc:'', formats:'', dimensions:'', fileSize:''}], showProductModal:false};
+    });
+  }
+  deleteProduct(id){ this.setState(st => ({products: st.products.filter(p=>p.id!==id)})); }
+
+  renderVals(){
+    const st = this.state;
+    const isAdmin = st.mode === 'admin';
+    const isStorefront = !isAdmin;
+    const goHome = () => this.goTo('home');
+    const goToDashboardHandler = () => this.goTo('dashboard');
+    const goToWallArt = () => this.goToShop('wall-art');
+    const goToStock = () => this.goToShop('stock');
+    const goToTemplates = () => this.goToShop('templates');
+    const goToBundles = () => this.goToShop('bundles');
+    const goToAll = () => this.goToShop('all');
+    const productWithMeta = p => ({...p, categoryLabel: CATEGORY_LABELS[p.category], bg: bgFor(p.hue)});
+    const products = st.products.map(productWithMeta);
+    const activeProductBase = st.products.find(p=>p.id===st.activeProductId) || st.products[0];
+    const activeProduct = {
+      ...activeProductBase,
+      categoryLabel: CATEGORY_LABELS[activeProductBase.category],
+      bg: bgFor(activeProductBase.hue),
+      thumbs: [0,1,2,3].map(i => bgFor(activeProductBase.hue + i*20)),
+      onCategoryClick: () => this.goToShop(activeProductBase.category)
+    };
+    const licensedPrice = Math.round(activeProductBase.price * LICENSE_MULT[st.selectedLicense]);
+
+    const filteredProducts = products.filter(p =>
+      (st.shopCategory === 'all' || p.category === st.shopCategory) &&
+      (st.selectedStyles.length === 0 || st.selectedStyles.includes(p.style))
+    );
+
+    const cartDetails = st.cartItems.map((ci, idx) => {
+      const p = st.products.find(x=>x.id===ci.productId) || st.products[0];
+      return {title:p.title, bg:bgFor(p.hue), license:ci.license, licenseLabel:LICENSE_META[ci.license].label, price:Math.round(p.price * LICENSE_MULT[ci.license]), onRemove: () => this.removeFromCart(idx)};
+    });
+    const cartTotal = cartDetails.reduce((s,c)=>s+c.price, 0);
+
+    const catStyle = (active) => 'text-align:left;border:none;background:' + (active?'oklch(58% 0.16 265 / 0.1)':'transparent') + ';color:' + (active?'oklch(58% 0.16 265)':'oklch(38% 0.02 265)') + ';font-weight:700;font-size:13.5px;padding:9px 10px;border-radius:8px;cursor:pointer;';
+    const categoryFilters = [
+      {key:'all', label:'All Products'}, {key:'wall-art', label:'Wall Art'}, {key:'stock', label:'Stock Images'}, {key:'templates', label:'Templates'}, {key:'bundles', label:'Bundles'}
+    ].map(c => ({...c, style: catStyle(st.shopCategory===c.key), onClick: () => this.setShopCategory(c.key)}));
+
+    const allStyles = [...new Set(PRODUCTS_SEED.map(p=>p.style))];
+    const styleFilters = allStyles.map(s => {
+      const active = st.selectedStyles.includes(s);
+      return {key:s, onClick: () => this.toggleStyle(s), style:'border:1px solid ' + (active?'oklch(58% 0.16 265)':'oklch(88% 0.01 85)') + ';background:' + (active?'oklch(58% 0.16 265 / 0.1)':'#fff') + ';color:' + (active?'oklch(58% 0.16 265)':'oklch(40% 0.02 265)') + ';font-weight:600;font-size:12.5px;padding:7px 12px;border-radius:99px;cursor:pointer;'};
+    });
+
+    const licenseOptions = ['personal','commercial','extended'].map(k => {
+      const active = st.selectedLicense === k;
+      return {key:k, label:LICENSE_META[k].label, desc:LICENSE_META[k].desc, priceLabel:'$'+Math.round(activeProductBase.price*LICENSE_MULT[k]), onClick: () => this.setLicense(k), style:'border:2px solid ' + (active?'oklch(58% 0.16 265)':'oklch(90% 0.01 85)') + ';background:' + (active?'oklch(58% 0.16 265 / 0.06)':'#fff') + ';border-radius:12px;padding:14px 16px;cursor:pointer;'};
+    });
+
+    const dashTabStyle = (active) => 'text-align:left;border:none;background:' + (active?'oklch(22% 0.02 265)':'transparent') + ';color:' + (active?'#fff':'oklch(35% 0.02 265)') + ';font-weight:700;font-size:14px;padding:11px 14px;border-radius:10px;cursor:pointer;margin-bottom:2px;';
+    const dashTabs = [{key:'purchases',label:'Purchases'},{key:'downloads',label:'Downloads'},{key:'settings',label:'Settings'}].map(t=>({...t, style:dashTabStyle(st.dashTab===t.key), onClick: () => this.setDashTab(t.key)}));
+
+    const orderBadge = (status) => {
+      const colors = {Paid:'oklch(55% 0.13 155)', Refunded:'oklch(55% 0.02 265)', Pending:'oklch(60% 0.15 70)'};
+      const bg = {Paid:'oklch(55% 0.13 155 / 0.12)', Refunded:'oklch(55% 0.02 265 / 0.1)', Pending:'oklch(60% 0.15 70 / 0.12)'};
+      return 'font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:99px;color:' + colors[status] + ';background:' + bg[status] + ';';
+    };
+    const myOrders = ORDERS_SEED.map(o => ({...o, items: Math.ceil(o.total/20)||1, badgeStyle: orderBadge(o.status)}));
+    const orders = ORDERS_SEED.map(o => ({...o, badgeStyle: orderBadge(o.status)}));
+    const myDownloads = products.slice(0,4).map(p => ({title:p.title, bg:p.bg, license:'Personal'}));
+
+    const roleColors = {Customer:'oklch(45% 0.02 265)', Admin:'oklch(55% 0.16 265)', Creator:'oklch(55% 0.13 195)'};
+    const roleBg = {Customer:'oklch(45% 0.02 265 / 0.08)', Admin:'oklch(55% 0.16 265 / 0.1)', Creator:'oklch(55% 0.13 195 / 0.12)'};
+    const users = USERS_SEED.map(u => ({...u, roleStyle:'font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:99px;color:'+roleColors[u.role]+';background:'+roleBg[u.role]+';'}));
+
+    const adminTabStyle = (active) => 'text-align:left;border:none;background:' + (active?'rgba(255,255,255,0.1)':'transparent') + ';color:' + (active?'#fff':'rgba(255,255,255,0.6)') + ';font-weight:700;font-size:14px;padding:11px 14px;border-radius:10px;cursor:pointer;';
+    const adminTabs = [{key:'products',label:'Products'},{key:'orders',label:'Orders'},{key:'users',label:'Users'},{key:'analytics',label:'Analytics'}].map(t=>({...t, style:adminTabStyle(st.adminTab===t.key), onClick: () => this.setAdminTab(t.key)}));
+
+    const statCards = [
+      {label:'Total revenue', value:'$' + ORDERS_SEED.reduce((s,o)=>s+o.total,0)},
+      {label:'Orders', value:String(ORDERS_SEED.length)},
+      {label:'Downloads', value:'1,284'},
+      {label:'Conversion', value:'3.8%'}
+    ];
+    const revenueBars = [{label:'Feb',v:38},{label:'Mar',v:52},{label:'Apr',v:44},{label:'May',v:68},{label:'Jun',v:74},{label:'Jul',v:91}].map(b => ({label:b.label, heightPct:b.v}));
+
+    const collections = [
+      {title:'Abstract Wall Art', category:'wall-art', count:4, bg:bgFor(32)},
+      {title:'New Stock Packs', category:'stock', count:3, bg:bgFor(24)},
+      {title:'Featured Templates', category:'templates', count:2, bg:bgFor(282)},
+      {title:'Founder Bundles', category:'bundles', count:1, bg:bgFor(12)}
+    ].map(c => ({...c, onClick: () => this.goToShop(c.category)}));
+
+    const toggleBtn = (active) => 'border:none;border-radius:99px;padding:8px 18px;font-weight:700;font-size:13px;cursor:pointer;background:' + (active?'linear-gradient(135deg, oklch(58% 0.16 265), oklch(70% 0.13 195))':'transparent') + ';color:' + (active?'#fff':'rgba(255,255,255,0.6)') + ';';
+
+    const productsAdmin = products.map(p => ({...p, onEdit: () => this.openEditProduct(p.id), onDelete: () => this.deleteProduct(p.id)}));
+
+    return {
+      appBg: isAdmin ? 'oklch(97% 0.006 85)' : 'oklch(98% 0.008 85)',
+      isStorefront, isAdmin,
+      storefrontToggleStyle: toggleBtn(isStorefront),
+      adminToggleStyle: toggleBtn(isAdmin),
+      setModeStorefront: () => this.setMode('storefront'),
+      setModeAdmin: () => this.setMode('admin'),
+      goHome, goToDashboardHandler, goToWallArt, goToStock, goToTemplates, goToBundles, goToAll,
+      onTitleChange: (e) => this.updateField('title', e.target.value),
+      onCategoryChange: (e) => this.updateField('category', e.target.value),
+      onStyleChange: (e) => this.updateField('style', e.target.value),
+      onPriceChange: (e) => this.updateField('price', e.target.value),
+      isHome: st.page==='home', isShop: st.page==='shop', isProduct: st.page==='product',
+      isCheckout: st.page==='checkout', isConfirmation: st.page==='confirmation', isDashboard: st.page==='dashboard',
+      cartOpen: st.cartOpen, cartCount: st.cartItems.length, cartEmpty: st.cartItems.length===0,
+      cartDetails, cartTotal,
+      heroTile1: bgFor(250)+'border-radius:18px;', heroTile2: bgFor(32)+'border-radius:18px;', heroTile3: bgFor(140)+'border-radius:18px;',
+      collections,
+      trendingProducts: products.slice(0,4),
+      categoryFilters, styleFilters, filteredProducts, shopEmpty: filteredProducts.length===0,
+      shopTitle: CATEGORY_LABELS[st.shopCategory], shopResultCount: filteredProducts.length,
+      activeProduct, licensedPrice, licenseOptions,
+      dashTabs, isDashPurchases: st.dashTab==='purchases', isDashDownloads: st.dashTab==='downloads', isDashSettings: st.dashTab==='settings',
+      myOrders, myDownloads,
+      adminTabs, isAdminProducts: st.adminTab==='products', isAdminOrders: st.adminTab==='orders', isAdminUsers: st.adminTab==='users', isAdminAnalytics: st.adminTab==='analytics',
+      products: productsAdmin, orders, users, statCards, revenueBars,
+      showProductModal: st.showProductModal, modalTitle: st.editingProductId ? 'Edit product' : 'Add product', formDraft: st.formDraft,
+      footer: React.createElement('div', {style:{borderTop:'1px solid oklch(90% 0.01 85)', padding:'32px', textAlign:'center', fontSize:'13px', color:'oklch(50% 0.02 265)'}}, '\u00A9 2026 Veedibox \u2014 Modern art & creative assets'),
+      goTo: this.goTo.bind(this), goToShop: this.goToShop.bind(this), setMode: this.setMode.bind(this),
+      setShopCategory: this.setShopCategory.bind(this), toggleStyle: this.toggleStyle.bind(this),
+      openProduct: this.openProduct.bind(this), setLicense: this.setLicense.bind(this), toggleCart: this.toggleCart.bind(this),
+      quickAdd: this.quickAdd.bind(this), addActiveToCart: this.addActiveToCart.bind(this), buyActiveNow: this.buyActiveNow.bind(this),
+      removeFromCart: this.removeFromCart.bind(this), goToCheckout: this.goToCheckout.bind(this), completeCheckout: this.completeCheckout.bind(this),
+      setDashTab: this.setDashTab.bind(this), setAdminTab: this.setAdminTab.bind(this),
+      openAddProduct: this.openAddProduct.bind(this), openEditProduct: this.openEditProduct.bind(this), closeModal: this.closeModal.bind(this),
+      updateField: this.updateField.bind(this), saveProduct: this.saveProduct.bind(this), deleteProduct: this.deleteProduct.bind(this)
+    };
+  }
+}
+</script>
+</body>
+</html>

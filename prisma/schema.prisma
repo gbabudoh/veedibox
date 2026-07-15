@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+  SUPER_ADMIN
+  CREATOR
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum ProductCategory {
+  WALL_ART
+  STOCK
+  TEMPLATES
+  BUNDLES
+}
+
+enum LicenseType {
+  PERSONAL
+  COMMERCIAL
+  EXTENDED
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  REFUNDED
+}
+
+enum FileKind {
+  DIGITAL
+  PRINT
+}
+
+model User {
+  id           String     @id @default(cuid())
+  email        String     @unique
+  passwordHash String
+  name         String?
+  role         Role       @default(CUSTOMER)
+  status       UserStatus @default(ACTIVE)
+  createdAt    DateTime   @default(now())
+  orders       Order[]
+  products     Product[]  @relation("CreatorProducts")
+  auditLogs    AuditLog[] @relation("AuditActor")
+}
+
+model Product {
+  id          String          @id @default(cuid())
+  title       String
+  slug        String          @unique
+  description String
+  category    ProductCategory
+  style       String
+  tags        String[]
+  price       Int             // cents
+  formats     String
+  dimensions  String
+  previewKey  String          // MinIO object key for preview image
+  metadata    Json?           // category-specific extra attributes (see src/lib/category-fields.ts)
+  status      String          @default("draft") // draft | published
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  creatorId   String?
+  creator     User?           @relation("CreatorProducts", fields: [creatorId], references: [id])
+  orderItems  OrderItem[]
+  files       ProductFile[]
+}
+
+model ProductFile {
+  id         String   @id @default(cuid())
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  label      String   // e.g. "JPG", "PNG", "Print-ready PDF"
+  kind       FileKind @default(DIGITAL)
+  fileKey    String   // MinIO object key in the originals bucket
+  fileSizeMb Int
+  sortOrder  Int      @default(0)
+  createdAt  DateTime @default(now())
+  downloadTokens DownloadToken[]
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String
+  actor      User     @relation("AuditActor", fields: [actorId], references: [id])
+  action     String   // e.g. "product.create", "user.suspend", "admin.create"
+  targetType String   // "Product" | "User" | "Order"
+  targetId   String
+  metadata   Json?
+  createdAt  DateTime @default(now())
+}
+
+model Order {
+  id            String      @id @default(cuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id])
+  status        OrderStatus @default(PENDING)
+  totalCents    Int
+  stripeSessionId String?   @unique
+  createdAt     DateTime    @default(now())
+  items         OrderItem[]
+}
+
+model OrderItem {
+  id          String      @id @default(cuid())
+  orderId     String
+  order       Order       @relation(fields: [orderId], references: [id])
+  productId   String
+  product     Product     @relation(fields: [productId], references: [id])
+  license     LicenseType
+  priceCents  Int
+}
+
+model DownloadToken {
+  id            String      @id @default(cuid())
+  orderItemId   String
+  productFileId String
+  productFile   ProductFile @relation(fields: [productFileId], references: [id])
+  token         String      @unique
+  expiresAt     DateTime
+  usedCount     Int         @default(0)
+  createdAt     DateTime    @default(now())
+}

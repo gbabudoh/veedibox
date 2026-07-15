@@ -1,0 +1,19 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "datasource",
+    "postgresql",
+    "prisma",
+    "cuid",
+    "minio",
+    "imgproxy",
+    "nextauth",
+    "zod",
+    "veedibox",
+    "bcryptjs",
+    "webhook",
+    "webhooks",
+    "stripe"
+  ]
+}
