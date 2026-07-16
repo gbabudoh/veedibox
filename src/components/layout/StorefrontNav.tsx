@@ -25,9 +25,8 @@ export function StorefrontNav() {
       }}
     >
       <div style={{ maxWidth: maxWidth.page, margin: '0 auto', padding: '16px 32px', display: 'flex', alignItems: 'center', gap: 32 }}>
-        <Link href="/" style={{ cursor: 'pointer', fontFamily: fonts.heading, fontWeight: 800, fontSize: 21, letterSpacing: -0.4, display: 'flex', alignItems: 'center', gap: 8 }}>
-          <img src="/favicon.png" alt="Veedibox logo" style={{ width: 24, height: 24, objectFit: 'contain' }} />
-          Veedibox
+        <Link href="/" style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+          <img src="/logo.png" alt="Veedibox logo" style={{ height: 24, objectFit: 'contain', imageRendering: '-webkit-optimize-contrast' }} />
         </Link>
         <div style={{ display: 'flex', gap: 24, fontSize: 14.5, fontWeight: 600, color: colors.textMuted }}>
           {CATEGORY_LINKS.map((c) => (

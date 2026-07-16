@@ -14,9 +14,8 @@ export function Footer() {
         }}
       >
         <div>
-          <div style={{ fontFamily: fonts.heading, fontWeight: 800, fontSize: 19, display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
-            <img src="/favicon.png" alt="Veedibox logo" style={{ width: 20, height: 20, objectFit: 'contain' }} />
-            Veedibox
+          <div style={{ display: 'flex', alignItems: 'center', marginBottom: 14 }}>
+            <img src="/logo.png" alt="Veedibox logo" style={{ height: 20, objectFit: 'contain', imageRendering: '-webkit-optimize-contrast' }} />
           </div>
           <p style={{ fontSize: 13.5, lineHeight: 1.7, color: colors.textMuted, margin: 0, maxWidth: 320 }}>
             Modern art and usable visuals in one place — for decor, branding, and content.

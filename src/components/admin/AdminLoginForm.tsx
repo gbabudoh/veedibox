@@ -50,8 +50,7 @@ export function AdminLoginForm({ callbackUrl }: { callbackUrl?: string }) {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 9, marginBottom: 28 }}>
-          <img src="/favicon.png" alt="Veedibox logo" style={{ width: 24, height: 24, objectFit: 'contain' }} />
-          <span style={{ fontFamily: fonts.heading, fontWeight: 800, fontSize: 19, color: colors.text }}>Veedibox</span>
+          <img src="/logo.png" alt="Veedibox logo" style={{ height: 24, objectFit: 'contain', imageRendering: '-webkit-optimize-contrast' }} />
           <span
             style={{
               fontSize: 10.5,

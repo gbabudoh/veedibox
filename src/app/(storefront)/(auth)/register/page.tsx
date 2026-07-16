@@ -52,13 +52,13 @@ export default function RegisterPage() {
         {/* Branding Header */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 30 }}>
           <img
-            src="/favicon.png"
+            src="/logo.png"
             alt="Veedibox logo"
             style={{
-              width: 32,
               height: 32,
               objectFit: 'contain',
-              marginBottom: 14
+              marginBottom: 14,
+              imageRendering: '-webkit-optimize-contrast'
             }}
           />
           <h1 style={{ fontFamily: fonts.heading, fontSize: 26, fontWeight: 800, letterSpacing: -0.5, margin: 0, color: colors.text }}>
