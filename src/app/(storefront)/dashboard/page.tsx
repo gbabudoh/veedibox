@@ -115,7 +115,8 @@ export default async function DashboardOverviewPage() {
                   {token.expiresAt > now ? (
                     <a
                       href={`/api/downloads/${token.token}`}
-                      style={{ fontSize: 11.5, fontWeight: 700, color: '#fff', background: colors.dark, padding: '7px 11px', borderRadius: radii.sm, whiteSpace: 'nowrap' }}
+                      className="btn-interactive"
+                      style={{ display: 'inline-block', fontSize: 11.5, fontWeight: 700, color: '#fff', background: colors.dark, padding: '7px 11px', borderRadius: radii.sm, whiteSpace: 'nowrap' }}
                     >
                       Download
                     </a>

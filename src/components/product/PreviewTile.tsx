@@ -7,20 +7,42 @@ export function PreviewTile({
   previewUrl,
   hue,
   containerStyle,
-  alt = ''
+  alt = '',
+  hovered = false
 }: {
   previewUrl: string | null;
   hue: number;
   containerStyle?: CSSProperties;
   alt?: string;
+  hovered?: boolean;
 }) {
   return (
     <div style={{ position: 'relative', overflow: 'hidden', ...containerStyle }}>
       {previewUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={previewUrl} alt={alt} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+        <img
+          src={previewUrl}
+          alt={alt}
+          style={{
+            position: 'absolute',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            transform: hovered ? 'scale(1.05)' : 'scale(1)',
+            transition: 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)'
+          }}
+        />
       ) : (
-        <div style={{ position: 'absolute', inset: 0, ...bgFor(hue) }} />
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            ...bgFor(hue),
+            transform: hovered ? 'scale(1.05)' : 'scale(1)',
+            transition: 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)'
+          }}
+        />
       )}
     </div>
   );

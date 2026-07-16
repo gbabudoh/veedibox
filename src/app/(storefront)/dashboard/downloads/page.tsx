@@ -59,6 +59,7 @@ export default async function DashboardDownloadsPage() {
                 ) : (
                   <a
                     href={`/api/downloads/${token.token}`}
+                    className="btn-interactive"
                     style={{ display: 'block', width: '100%', boxSizing: 'border-box', textAlign: 'center', border: 'none', background: colors.dark, color: '#fff', fontWeight: 700, fontSize: 12.5, padding: 9, borderRadius: radii.sm, cursor: 'pointer' }}
                   >
                     Download
@@ -73,6 +74,7 @@ export default async function DashboardDownloadsPage() {
             <div style={{ fontSize: 14, color: colors.textFaint, marginBottom: 14 }}>No downloads yet — files appear here once a purchase is complete.</div>
             <Link
               href="/shop/all"
+              className="btn-interactive"
               style={{ display: 'inline-block', background: colors.primaryGradient, color: '#fff', fontWeight: 700, fontSize: 13.5, padding: '11px 20px', borderRadius: radii.md }}
             >
               Explore the Shop

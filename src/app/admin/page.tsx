@@ -66,7 +66,7 @@ export default async function AdminOverviewPage() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginBottom: 28 }}>
         <StatCard label="Total revenue" value={`$${formatUSD(revenueAgg._sum.totalCents ?? 0)}`} accent icon={<OverviewIcon />} />
         <StatCard label="Orders" value={String(orderCount)} icon={<OrdersIcon />} />
-        <StatCard label="Products" value={String(productCount)} />
+        <StatCard label="Products" value={String(productCount)} icon={<BundlesIcon />} />
         <StatCard label="Customers" value={String(customerCount)} icon={<CustomersIcon />} />
       </div>
 
@@ -139,12 +139,21 @@ export default async function AdminOverviewPage() {
                 View all →
               </Link>
             </div>
-            <div className="admin-card-hover" style={{ background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: radii.xl, padding: 8, boxShadow: shadows.card }}>
+            <div className="admin-card-hover" style={{ background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: radii.xl, padding: '8px 12px', boxShadow: shadows.card }}>
               {recentAuditLog.length === 0 ? (
                 <div style={{ padding: '32px 12px', textAlign: 'center', color: colors.textFaint, fontSize: 13 }}>No admin activity yet.</div>
               ) : (
-                recentAuditLog.map((e) => (
-                  <div key={e.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 10px' }}>
+                recentAuditLog.map((e, idx) => (
+                  <div
+                    key={e.id}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 12,
+                      padding: '12px 10px',
+                      borderBottom: idx < recentAuditLog.length - 1 ? `1px solid ${colors.borderSubtle}` : 'none'
+                    }}
+                  >
                     <Avatar name={e.actor.name} email={e.actor.email} size={26} style={{ fontSize: 10 }} />
                     <div style={{ minWidth: 0, flex: 1 }}>
                       <div style={{ fontSize: 12.5, fontWeight: 700, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>

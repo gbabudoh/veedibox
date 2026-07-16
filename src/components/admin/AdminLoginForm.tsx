@@ -45,7 +45,7 @@ export function AdminLoginForm({ callbackUrl }: { callbackUrl?: string }) {
           border: `1px solid ${colors.border}`,
           borderRadius: radii.xxl,
           padding: 36,
-          boxShadow: shadows.card,
+          boxShadow: '0 20px 48px rgba(16, 24, 40, 0.05), 0 4px 12px rgba(16, 24, 40, 0.02)',
           animation: 'fadeIn 0.35s ease'
         }}
       >
@@ -75,13 +75,83 @@ export function AdminLoginForm({ callbackUrl }: { callbackUrl?: string }) {
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           <div>
             <div style={{ fontSize: 12.5, fontWeight: 700, marginBottom: 6, color: colors.text }}>Email</div>
-            <Input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@veedibox.com" />
+            <div style={{ position: 'relative' }}>
+              <span style={{
+                position: 'absolute',
+                left: 14,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                color: colors.textMuted2,
+                display: 'flex',
+                alignItems: 'center',
+                pointerEvents: 'none'
+              }}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                  <polyline points="22,6 12,13 2,6" />
+                </svg>
+              </span>
+              <Input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@veedibox.com"
+                style={{ paddingLeft: 38 }}
+              />
+            </div>
           </div>
           <div>
             <div style={{ fontSize: 12.5, fontWeight: 700, marginBottom: 6, color: colors.text }}>Password</div>
-            <Input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" />
+            <div style={{ position: 'relative' }}>
+              <span style={{
+                position: 'absolute',
+                left: 14,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                color: colors.textMuted2,
+                display: 'flex',
+                alignItems: 'center',
+                pointerEvents: 'none'
+              }}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+              </span>
+              <Input
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                style={{ paddingLeft: 38 }}
+              />
+            </div>
           </div>
-          {error && <div style={{ fontSize: 13, color: colors.danger }}>{error}</div>}
+
+          {error && (
+            <div style={{
+              fontSize: 12.5,
+              fontWeight: 600,
+              color: colors.danger,
+              background: 'oklch(50% 0.18 25 / 0.08)',
+              border: '1px solid oklch(85% 0.08 25 / 0.3)',
+              borderRadius: 8,
+              padding: '10px 14px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8
+            }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              {error}
+            </div>
+          )}
+
           <button
             type="submit"
             disabled={submitting}

@@ -1,4 +1,6 @@
-import { ReactNode } from 'react';
+'use client';
+
+import { ReactNode, useState } from 'react';
 import { colors, fonts, radii, shadows } from '@/lib/theme';
 
 export function StatCard({
@@ -14,18 +16,25 @@ export function StatCard({
   accent?: boolean;
   icon?: ReactNode;
 }) {
+  const [hovered, setHovered] = useState(false);
+
   return (
     <div
-      className="admin-card-hover"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       style={{
         background: accent ? colors.primaryGradient : colors.surface,
-        border: accent ? 'none' : `1px solid ${colors.border}`,
+        border: accent ? 'none' : `1px solid ${hovered ? colors.primary : colors.border}`,
         borderRadius: radii.xl,
         padding: 20,
         display: 'flex',
         flexDirection: 'column',
         gap: 10,
-        boxShadow: accent ? shadows.primaryGlow : shadows.card
+        transform: hovered ? 'translateY(-4px)' : 'translateY(0)',
+        boxShadow: accent
+          ? (hovered ? '0 14px 30px oklch(58% 0.16 265 / 0.35)' : shadows.primaryGlow)
+          : (hovered ? shadows.cardLift : shadows.card),
+        transition: 'transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease'
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -51,7 +60,9 @@ export function StatCard({
               alignItems: 'center',
               justifyContent: 'center',
               borderRadius: 8,
-              background: accent ? 'rgba(255,255,255,0.16)' : colors.primarySoft
+              background: accent ? 'rgba(255,255,255,0.16)' : colors.primarySoft,
+              transform: hovered ? 'scale(1.08)' : 'scale(1)',
+              transition: 'transform 0.2s ease'
             }}
           >
             {icon}

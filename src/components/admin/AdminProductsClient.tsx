@@ -36,6 +36,7 @@ function emptyDraft(category: UrlCategory): ProductFormDraft {
 
 export function AdminProductsClient({ category, initialProducts }: { category: UrlCategory; initialProducts: AdminProduct[] }) {
   const [products, setProducts] = useState<AdminProduct[]>(initialProducts);
+  const [searchQuery, setSearchQuery] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draft, setDraft] = useState<ProductFormDraft>(emptyDraft(category));
@@ -107,25 +108,94 @@ export function AdminProductsClient({ category, initialProducts }: { category: U
     router.refresh();
   };
 
+  const filteredProducts = products.filter(
+    (p) =>
+      p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.style.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, gap: 16 }}>
         <div>
           <h1 style={{ fontFamily: fonts.heading, fontSize: 23, fontWeight: 800, margin: 0, letterSpacing: -0.3 }}>{CATEGORY_LABELS[category]}</h1>
-          <div style={{ fontSize: 13, color: colors.textFaint, marginTop: 4 }}>{products.length} product{products.length === 1 ? '' : 's'}</div>
+          <div style={{ fontSize: 13, color: colors.textFaint, marginTop: 4 }}>
+            {searchQuery
+              ? `${filteredProducts.length} of ${products.length} found`
+              : `${products.length} product${products.length === 1 ? '' : 's'}`}
+          </div>
         </div>
-        <button
-          onClick={openAddProduct}
-          className="admin-btn"
-          style={{ border: 'none', background: colors.primaryGradient, color: '#fff', fontWeight: 700, fontSize: 13.5, padding: '11px 18px', borderRadius: radii.md, cursor: 'pointer', boxShadow: '0 4px 12px oklch(58% 0.16 265 / 0.22)' }}
-        >
-          + Add {CATEGORY_LABELS[category].replace(/s$/, '')}
-        </button>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1, justifyContent: 'flex-end' }}>
+          <div style={{ position: 'relative', width: '100%', maxWidth: 280 }}>
+            <span style={{
+              position: 'absolute',
+              left: 12,
+              top: '50%',
+              transform: 'translateY(-50%)',
+              color: colors.textMuted2,
+              display: 'flex',
+              alignItems: 'center',
+              pointerEvents: 'none'
+            }}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+            </span>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search products..."
+              style={{
+                width: '100%',
+                boxSizing: 'border-box',
+                padding: '9px 12px 9px 34px',
+                borderRadius: radii.md,
+                border: `1px solid ${colors.borderStrong}`,
+                background: colors.surface,
+                fontSize: 13,
+                outline: 'none',
+                color: colors.text,
+                transition: 'all 0.15s ease'
+              }}
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                style={{
+                  position: 'absolute',
+                  right: 8,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  border: 'none',
+                  background: 'transparent',
+                  fontSize: 16,
+                  fontWeight: 'bold',
+                  color: colors.textFaint,
+                  cursor: 'pointer',
+                  padding: '4px 6px'
+                }}
+              >
+                &times;
+              </button>
+            )}
+          </div>
+
+          <button
+            onClick={openAddProduct}
+            className="admin-btn btn-interactive"
+            style={{ border: 'none', background: colors.primaryGradient, color: '#fff', fontWeight: 700, fontSize: 13.5, padding: '10px 18px', borderRadius: radii.md, cursor: 'pointer', boxShadow: '0 4px 12px oklch(58% 0.16 265 / 0.22)', whiteSpace: 'nowrap' }}
+          >
+            + Add {CATEGORY_LABELS[category].replace(/s$/, '')}
+          </button>
+        </div>
       </div>
       {error && <div style={{ fontSize: 13, color: colors.danger, marginBottom: 14 }}>{error}</div>}
 
-      <AdminTable columns={COLUMNS} empty={{ message: `No ${CATEGORY_LABELS[category].toLowerCase()} yet — add your first one.` }}>
-        {products.map((p) => (
+      <AdminTable columns={COLUMNS} empty={{ message: searchQuery ? 'No products match your search query.' : `No ${CATEGORY_LABELS[category].toLowerCase()} yet — add your first one.` }}>
+        {filteredProducts.map((p) => (
           <AdminTableRow key={p.id} columns={COLUMNS}>
             <PreviewTile previewUrl={p.previewUrl} hue={p.hue} alt={p.title} containerStyle={{ width: 36, height: 36, borderRadius: 8 }} />
             <div style={{ fontWeight: 700 }}>{p.title}</div>
@@ -138,14 +208,14 @@ export function AdminProductsClient({ category, initialProducts }: { category: U
             <div style={{ display: 'flex', gap: 8 }}>
               <button
                 onClick={() => openEditProduct(p.id)}
-                className="admin-btn"
+                className="admin-btn btn-interactive"
                 style={{ border: `1px solid ${colors.border}`, background: colors.surface, fontSize: 12, fontWeight: 700, padding: '6px 10px', borderRadius: 7, cursor: 'pointer' }}
               >
                 Edit
               </button>
               <button
                 onClick={() => deleteProduct(p.id)}
-                className="admin-btn"
+                className="admin-btn btn-interactive"
                 style={{ border: `1px solid ${colors.dangerBorder}`, color: colors.danger, background: colors.surface, fontSize: 12, fontWeight: 700, padding: '6px 10px', borderRadius: 7, cursor: 'pointer' }}
               >
                 Delete

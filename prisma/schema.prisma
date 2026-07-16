@@ -147,3 +147,26 @@ model HomepageContent {
   heroTiles           Json     // exactly 3: [{ imageKey: string|null, hue: number }, ...]
   updatedAt           DateTime @updatedAt
 }
+
+// Singleton row (id is always "about") backing the admin-editable about page section.
+model AboutPageContent {
+  id                  String   @id @default("about")
+  badgeText           String
+  heading             String
+  paragraph1          String
+  paragraph2          String
+  storyVisualHue      Int
+  storyVisualTitle    String
+  storyVisualSubtitle String
+  pillar1Title        String
+  pillar1Desc         String
+  pillar2Title        String
+  pillar2Desc         String
+  pillar3Title        String
+  pillar3Desc         String
+  ctaHeading          String
+  ctaSubheading       String
+  ctaButtonText       String
+  ctaButtonHref       String
+  updatedAt           DateTime @updatedAt
+}

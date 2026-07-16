@@ -24,7 +24,10 @@ const CATALOG_TABS = [
   { href: '/admin/catalog/bundles', label: 'Bundles', icon: <BundlesIcon /> }
 ];
 
-const CONTENT_TABS = [{ href: '/admin/content/homepage', label: 'Homepage', icon: <HomepageIcon /> }];
+const CONTENT_TABS = [
+  { href: '/admin/content/homepage', label: 'Homepage', icon: <HomepageIcon /> },
+  { href: '/admin/content/about', label: 'About Page', icon: <HomepageIcon /> }
+];
 
 const OPERATIONS_TABS = [
   { href: '/admin/orders', label: 'Orders', icon: <OrdersIcon /> },

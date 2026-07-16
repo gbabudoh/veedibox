@@ -1,6 +1,8 @@
 import Link from 'next/link';
+import { Suspense } from 'react';
 import { CartButton } from '@/components/cart/CartButton';
 import { AuthNavLink } from '@/components/layout/AuthNavLink';
+import { SearchBar } from '@/components/layout/SearchBar';
 import { colors, fonts, maxWidth } from '@/lib/theme';
 
 const CATEGORY_LINKS = [
@@ -34,7 +36,13 @@ export function StorefrontNav() {
             </Link>
           ))}
         </div>
-        <div style={{ flex: 1 }} />
+        <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
+          <Suspense fallback={
+            <div style={{ width: '100%', maxWidth: 360, height: 38, background: 'oklch(96% 0.008 85)', borderRadius: 999 }} />
+          }>
+            <SearchBar />
+          </Suspense>
+        </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
           <AuthNavLink />
           <CartButton />
