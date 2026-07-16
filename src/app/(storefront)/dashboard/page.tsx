@@ -103,7 +103,7 @@ export default async function DashboardOverviewPage() {
               {recentDownloads.map(({ item, token }) => (
                 <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                   <PreviewTile
-                    previewUrl={resolvePreviewUrl(item.product.previewKey)}
+                    previewUrl={resolvePreviewUrl(item.product.previewKey, { watermark: false })}
                     hue={hueFromId(item.product.id)}
                     alt={item.product.title}
                     containerStyle={{ width: 44, height: 44, borderRadius: radii.sm, flex: 'none' }}

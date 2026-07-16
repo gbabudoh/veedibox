@@ -40,7 +40,7 @@ export default async function DashboardDownloadsPage() {
                 opacity: expired ? 0.6 : 1
               }}
             >
-              <PreviewTile previewUrl={resolvePreviewUrl(item.product.previewKey)} hue={hueFromId(item.product.id)} alt={item.product.title} containerStyle={{ height: 130 }} />
+              <PreviewTile previewUrl={resolvePreviewUrl(item.product.previewKey, { watermark: false })} hue={hueFromId(item.product.id)} alt={item.product.title} containerStyle={{ height: 130 }} />
               <div style={{ padding: 14 }}>
                 <div style={{ fontWeight: 700, fontSize: 13.5, marginBottom: 2 }}>{item.product.title}</div>
                 <div style={{ fontSize: 11.5, color: colors.textFaint, marginBottom: 8 }}>{file.label} · {file.fileSizeMb} MB</div>

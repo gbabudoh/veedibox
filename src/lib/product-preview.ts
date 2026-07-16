@@ -10,7 +10,8 @@ import { hasRealPreview } from '@/lib/product-mapper';
 // so the source it expects is an s3:// URL, not a public HTTP one.
 export function resolvePreviewUrl(previewKey: string, opts?: { width?: number; height?: number; watermark?: boolean }): string | null {
   if (!hasRealPreview(previewKey)) return null;
-  return imgproxyUrl(`s3://${BUCKETS.previews}/${previewKey}`, opts);
+  const watermark = opts?.watermark !== undefined ? opts.watermark : true;
+  return imgproxyUrl(`s3://${BUCKETS.previews}/${previewKey}`, { ...opts, watermark });
 }
 
 export function withPreviewUrl<T extends { previewKey: string }>(product: T): T & { previewUrl: string | null } {
