@@ -15,7 +15,7 @@ export function Footer() {
       >
         <div>
           <div style={{ fontFamily: fonts.heading, fontWeight: 800, fontSize: 19, display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
-            <span style={{ width: 24, height: 24, borderRadius: 6, background: colors.heroGradient, display: 'inline-block' }} />
+            <img src="/favicon.png" alt="Veedibox logo" style={{ width: 20, height: 20, objectFit: 'contain' }} />
             Veedibox
           </div>
           <p style={{ fontSize: 13.5, lineHeight: 1.7, color: colors.textMuted, margin: 0, maxWidth: 320 }}>

@@ -39,15 +39,16 @@ export default function LoginPage({ searchParams }: { searchParams: { callbackUr
       }}>
         {/* Branding Header */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 30 }}>
-          <span style={{
-            width: 36,
-            height: 36,
-            borderRadius: 10,
-            background: colors.heroGradient,
-            display: 'inline-block',
-            marginBottom: 14,
-            boxShadow: '0 4px 12px oklch(58% 0.16 265 / 0.2)'
-          }} />
+          <img
+            src="/favicon.png"
+            alt="Veedibox logo"
+            style={{
+              width: 32,
+              height: 32,
+              objectFit: 'contain',
+              marginBottom: 14
+            }}
+          />
           <h1 style={{ fontFamily: fonts.heading, fontSize: 26, fontWeight: 800, letterSpacing: -0.5, margin: 0, color: colors.text }}>
             Welcome back
           </h1>

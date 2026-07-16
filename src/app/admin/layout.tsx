@@ -86,7 +86,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     <div style={{ display: 'grid', gridTemplateColumns: '256px 1fr', minHeight: '100vh' }}>
       <div style={{ background: colors.adminSidebar, color: '#fff', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
         <div style={{ fontFamily: fonts.heading, fontWeight: 800, fontSize: 18.5, display: 'flex', alignItems: 'center', gap: 9, padding: '22px 22px 6px' }}>
-          <span style={{ width: 26, height: 26, borderRadius: 7, background: colors.heroGradient, display: 'inline-block' }} />
+          <img src="/favicon.png" alt="Veedibox logo" style={{ width: 22, height: 22, objectFit: 'contain' }} />
           Veedibox
           <span
             style={{

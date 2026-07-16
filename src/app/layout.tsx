@@ -16,6 +16,10 @@ export const metadata: Metadata = {
   keywords: ['digital art', 'wall art prints', 'stock photography', 'creative templates', 'design assets', 'UI wireframes', 'posters', 'bundles', 'curated visuals', 'local art design'],
   authors: [{ name: 'Veedibox Team' }],
   creator: 'Veedibox Studio',
+  icons: {
+    icon: '/favicon.png',
+    apple: '/app-icon.png'
+  },
   openGraph: {
     type: 'website',
     locale: 'en_US',
