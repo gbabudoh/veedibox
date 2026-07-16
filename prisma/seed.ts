@@ -97,6 +97,27 @@ async function main() {
     create: { email: STAFF_EMAIL, name: 'Veedibox Staff', passwordHash: staffHash, role: 'ADMIN' }
   });
 
+  const homepageContent = {
+    badgeText: 'Modern Art & Creative Assets',
+    heading: 'Original art, ready-to-use assets, one gallery.',
+    subheading:
+      'Digital paintings, stock imagery, and templates for decor, branding, and content — curated like a gallery, delivered like a library.',
+    primaryButtonText: 'Explore the Shop',
+    primaryButtonHref: '/shop/all',
+    secondaryButtonText: 'My Veedibox',
+    secondaryButtonHref: '/dashboard',
+    heroTiles: [
+      { imageKey: null, hue: 32 },
+      { imageKey: null, hue: 212 },
+      { imageKey: null, hue: 142 }
+    ]
+  };
+  await prisma.homepageContent.upsert({
+    where: { id: 'homepage' },
+    update: {},
+    create: { id: 'homepage', ...homepageContent }
+  });
+
   const customerHash = await bcrypt.hash(CUSTOMER_PASSWORD, 10);
   await prisma.user.upsert({
     where: { email: CUSTOMER_EMAIL },

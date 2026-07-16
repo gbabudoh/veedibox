@@ -1,8 +1,10 @@
+import { CSSProperties } from 'react';
 import Link from 'next/link';
 import { ProductCard } from '@/components/product/ProductCard';
 import { prisma } from '@/lib/db/client';
 import { toUIProduct, CATEGORY_TO_URL, CATEGORY_LABELS, UrlCategory } from '@/lib/product-mapper';
-import { withPreviewUrls } from '@/lib/product-preview';
+import { withPreviewUrls, resolvePreviewUrl } from '@/lib/product-preview';
+import { getHomepageContent, HeroTile } from '@/lib/homepage';
 import { bgFor, colors, fonts, maxWidth } from '@/lib/theme';
 
 const COLLECTION_HUES: Record<UrlCategory, number> = {
@@ -12,10 +14,22 @@ const COLLECTION_HUES: Record<UrlCategory, number> = {
   bundles: 12
 };
 
+// Renders a real uploaded image when the admin has set one for this hero tile,
+// falling back to the original gradient placeholder otherwise.
+function HeroTileImage({ tile, style }: { tile: HeroTile; style: CSSProperties }) {
+  const previewUrl = tile.imageKey ? resolvePreviewUrl(tile.imageKey, { width: 640 }) : null;
+  if (previewUrl) {
+    // eslint-disable-next-line @next/next/no-img-element
+    return <img src={previewUrl} alt="" style={{ ...style, width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />;
+  }
+  return <div style={{ ...bgFor(tile.hue), ...style }} />;
+}
+
 export default async function HomePage() {
-  const [trendingRows, categoryCounts] = await Promise.all([
+  const [trendingRows, categoryCounts, hero] = await Promise.all([
     prisma.product.findMany({ where: { status: 'published' }, include: { files: true }, orderBy: { createdAt: 'desc' }, take: 4 }),
-    prisma.product.groupBy({ by: ['category'], where: { status: 'published' }, _count: { _all: true } })
+    prisma.product.groupBy({ by: ['category'], where: { status: 'published' }, _count: { _all: true } }),
+    getHomepageContent()
   ]);
 
   const trending = withPreviewUrls(trendingRows.map(toUIProduct));
@@ -54,18 +68,17 @@ export default async function HomePage() {
               marginBottom: 20
             }}
           >
-            Modern Art &amp; Creative Assets
+            {hero.badgeText}
           </div>
           <h1 style={{ fontFamily: fonts.heading, fontSize: 56, fontWeight: 800, lineHeight: 1.05, letterSpacing: -1.5, margin: '0 0 20px' }}>
-            Original art, ready-to-use assets, one gallery.
+            {hero.heading}
           </h1>
           <p style={{ fontSize: 17, lineHeight: 1.6, color: colors.textMuted, maxWidth: 480, margin: '0 0 32px' }}>
-            Digital paintings, stock imagery, and templates for decor, branding, and content — curated like a gallery,
-            delivered like a library.
+            {hero.subheading}
           </p>
           <div style={{ display: 'flex', gap: 14 }}>
             <Link
-              href="/shop/all"
+              href={hero.primaryButtonHref}
               style={{
                 border: 'none',
                 cursor: 'pointer',
@@ -79,10 +92,10 @@ export default async function HomePage() {
                 display: 'inline-block'
               }}
             >
-              Explore the Shop
+              {hero.primaryButtonText}
             </Link>
             <Link
-              href="/dashboard"
+              href={hero.secondaryButtonHref}
               style={{
                 border: `1px solid ${colors.borderStrong}`,
                 background: colors.surface,
@@ -94,15 +107,15 @@ export default async function HomePage() {
                 display: 'inline-block'
               }}
             >
-              My Veedibox
+              {hero.secondaryButtonText}
             </Link>
           </div>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, height: 420 }}>
-          <div style={{ ...bgFor(32), borderRadius: 16 }} />
+          <HeroTileImage tile={hero.heroTiles[0]} style={{ borderRadius: 16 }} />
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-            <div style={{ ...bgFor(212), flex: 1, borderRadius: 16 }} />
-            <div style={{ ...bgFor(142), flex: 1, borderRadius: 16 }} />
+            <HeroTileImage tile={hero.heroTiles[1]} style={{ flex: 1, borderRadius: 16 }} />
+            <HeroTileImage tile={hero.heroTiles[2]} style={{ flex: 1, borderRadius: 16 }} />
           </div>
         </div>
       </div>

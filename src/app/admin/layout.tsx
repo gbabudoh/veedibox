@@ -12,7 +12,8 @@ import {
   CustomersIcon,
   AnalyticsIcon,
   TeamIcon,
-  AuditLogIcon
+  AuditLogIcon,
+  HomepageIcon
 } from '@/components/admin/icons';
 import { colors, fonts } from '@/lib/theme';
 
@@ -22,6 +23,8 @@ const CATALOG_TABS = [
   { href: '/admin/catalog/templates', label: 'Templates', icon: <TemplatesIcon /> },
   { href: '/admin/catalog/bundles', label: 'Bundles', icon: <BundlesIcon /> }
 ];
+
+const CONTENT_TABS = [{ href: '/admin/content/homepage', label: 'Homepage', icon: <HomepageIcon /> }];
 
 const OPERATIONS_TABS = [
   { href: '/admin/orders', label: 'Orders', icon: <OrdersIcon /> },
@@ -100,6 +103,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <div style={{ padding: '18px 12px 8px' }}>
           <NavGroup tabs={[{ href: '/admin', label: 'Overview', icon: <OverviewIcon />, exact: true }]} activeStyle={activeStyle} inactiveStyle={inactiveStyle} />
           <NavGroup title="Catalog" tabs={CATALOG_TABS} activeStyle={activeStyle} inactiveStyle={inactiveStyle} />
+          <NavGroup title="Content" tabs={CONTENT_TABS} activeStyle={activeStyle} inactiveStyle={inactiveStyle} />
           <NavGroup title="Operations" tabs={OPERATIONS_TABS} activeStyle={activeStyle} inactiveStyle={inactiveStyle} />
           <NavGroup title="Insights" tabs={ANALYTICS_TABS} activeStyle={activeStyle} inactiveStyle={inactiveStyle} />
           {isSuperAdmin && <NavGroup title="Admin" tabs={SUPER_ADMIN_TABS} activeStyle={activeStyle} inactiveStyle={inactiveStyle} />}

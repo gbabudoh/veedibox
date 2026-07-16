@@ -133,3 +133,17 @@ model DownloadToken {
   usedCount     Int         @default(0)
   createdAt     DateTime    @default(now())
 }
+
+// Singleton row (id is always "homepage") backing the admin-editable homepage hero section.
+model HomepageContent {
+  id                  String   @id @default("homepage")
+  badgeText           String
+  heading             String
+  subheading          String
+  primaryButtonText   String
+  primaryButtonHref   String
+  secondaryButtonText String
+  secondaryButtonHref String
+  heroTiles           Json     // exactly 3: [{ imageKey: string|null, hue: number }, ...]
+  updatedAt           DateTime @updatedAt
+}
