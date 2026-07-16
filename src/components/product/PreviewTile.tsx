@@ -23,6 +23,8 @@ export function PreviewTile({
         <img
           src={previewUrl}
           alt={alt}
+          draggable={false}
+          data-protected="true"
           style={{
             position: 'absolute',
             inset: 0,
@@ -30,7 +32,9 @@ export function PreviewTile({
             height: '100%',
             objectFit: 'cover',
             transform: hovered ? 'scale(1.05)' : 'scale(1)',
-            transition: 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)'
+            transition: 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+            userSelect: 'none',
+            pointerEvents: 'none'
           }}
         />
       ) : (

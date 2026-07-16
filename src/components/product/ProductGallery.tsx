@@ -35,7 +35,7 @@ export function ProductGallery({ previewUrl, baseHue, title }: { previewUrl: str
   }, [lightboxOpen]);
 
   return (
-    <div>
+    <div data-protected="true">
       <button
         onClick={() => setLightboxOpen(true)}
         aria-label="Enlarge image"
