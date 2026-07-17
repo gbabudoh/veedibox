@@ -112,7 +112,10 @@ button {
 
 /* ── Content Protection ── */
 /* Prevent image selection, dragging, and touch-save across the storefront */
-[data-protected],
+[data-protected] {
+  -webkit-user-select: none;
+  user-select: none;
+}
 [data-protected] img {
   -webkit-user-select: none;
   user-select: none;
