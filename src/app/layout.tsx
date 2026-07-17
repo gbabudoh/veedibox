@@ -4,6 +4,8 @@ import Script from 'next/script';
 import { AuthProvider } from '@/components/providers/AuthProvider';
 import './globals.css';
 
+import { prisma } from '@/lib/db/client';
+
 const manrope = Manrope({ subsets: ['latin'], weight: ['500', '600', '700', '800'], variable: '--font-manrope' });
 const publicSans = Public_Sans({ subsets: ['latin'], weight: ['400', '500', '600'], variable: '--font-public-sans' });
 
@@ -51,9 +53,23 @@ export const metadata: Metadata = {
   }
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const clarityId = process.env.NEXT_PUBLIC_CLARITY_ID;
   const gaId = process.env.NEXT_PUBLIC_GA_ID;
+
+  let activeIntegrations: any[] = [];
+  try {
+    activeIntegrations = await prisma.$queryRaw<any[]>`SELECT * FROM "AdIntegration" WHERE "isActive" = true`;
+  } catch (error) {
+    // Graceful fallback if migrations haven't run or table is empty
+  }
+
+  const googleAd = activeIntegrations.find((x) => x.platform === 'google');
+  const bingAd = activeIntegrations.find((x) => x.platform === 'bing');
+  const facebookAd = activeIntegrations.find((x) => x.platform === 'facebook');
+  const instagramAd = activeIntegrations.find((x) => x.platform === 'instagram'); // usually shares facebook pixel
+  const xAd = activeIntegrations.find((x) => x.platform === 'x');
+  const linkedinAd = activeIntegrations.find((x) => x.platform === 'linkedin');
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -87,6 +103,97 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         <AuthProvider>{children}</AuthProvider>
+
+        {/* Dynamic Ad Integrations */}
+        {googleAd?.pixelId && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${googleAd.pixelId}`}
+              strategy="afterInteractive"
+            />
+            <Script id="google-ads" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${googleAd.pixelId}');
+              `}
+            </Script>
+          </>
+        )}
+
+        {facebookAd?.pixelId && (
+          <Script id="meta-pixel" strategy="afterInteractive">
+            {`
+              !function(f,b,e,v,n,t,s)
+              {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+              n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+              if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+              n.queue=[];t=b.createElement(e);t.async=!0;
+              t.src=v;s=b.getElementsByTagName(e)[0];
+              s.parentNode.insertBefore(t,s)}(window, document,'script',
+              'https://connect.facebook.net/en_US/fbevents.js');
+              fbq('init', '${facebookAd.pixelId}');
+              fbq('track', 'PageView');
+            `}
+          </Script>
+        )}
+
+        {instagramAd?.pixelId && instagramAd.pixelId !== facebookAd?.pixelId && (
+          <Script id="instagram-pixel" strategy="afterInteractive">
+            {`
+              !function(f,b,e,v,n,t,s)
+              {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+              n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+              if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+              n.queue=[];t=b.createElement(e);t.async=!0;
+              t.src=v;s=b.getElementsByTagName(e)[0];
+              s.parentNode.insertBefore(t,s)}(window, document,'script',
+              'https://connect.facebook.net/en_US/fbevents.js');
+              fbq('init', '${instagramAd.pixelId}');
+              fbq('track', 'PageView');
+            `}
+          </Script>
+        )}
+
+        {bingAd?.pixelId && (
+          <Script id="bing-pixel" strategy="afterInteractive">
+            {`
+              (function(w,d,t,r,u){var f,g,e;w[u]=w[u]||[],f=function(){var o={ti:"${bingAd.pixelId}"};o.q=w[u],w[u]=new UET(o),w[u].push("pageLoad")},g=d.createElement(t),g.src=r,g.async=1,g.onload=g.onreadystatechange=function(){var s=this.readyState;s&&"loaded"!==s&&"complete"!==s||(f(),g.onload=g.onreadystatechange=null)},e=d.getElementsByTagName(t)[0],e.parentNode.insertBefore(g,e)})(window,document,"script","//bat.bing.com/bat.js","uetq");
+            `}
+          </Script>
+        )}
+
+        {xAd?.pixelId && (
+          <Script id="x-pixel" strategy="afterInteractive">
+            {`
+              !function(e,t,n,s,u,a){e.twq||(s=e.twq=function(){s.exe?s.exe.apply(s,arguments):s.queue.push(arguments)
+              },s.version='1.1',s.queue=[],u=t.createElement(n),u.async=!0,u.src='https://static.ads-twitter.com/uwt.js',
+              a=t.getElementsByTagName(n)[0],a.parentNode.insertBefore(u,a))}(window,document,'script');
+              twq('config','${xAd.pixelId}');
+            `}
+          </Script>
+        )}
+
+        {linkedinAd?.pixelId && (
+          <Script id="linkedin-pixel" strategy="afterInteractive">
+            {`
+              _linkedin_partner_id = "${linkedinAd.pixelId}";
+              window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+              window._linkedin_data_partner_ids.push(_linkedin_partner_id);
+              (function(l) {
+              if (!l){window.lintrk = function(a,b){window.lintrk.q.push([a,b])};
+              window.lintrk.q=[]}
+              var s = document.getElementsByTagName("script")[0];
+              var b = document.createElement("script");
+              b.type = "text/javascript";b.async = true;
+              b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
+              s.parentNode.insertBefore(b, s);})(window.lintrk);
+            `}
+          </Script>
+        )}
+
+        {/* Existing Analytics */}
         {clarityId && (
           <Script id="microsoft-clarity" strategy="afterInteractive">
             {`

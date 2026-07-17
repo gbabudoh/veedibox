@@ -170,3 +170,11 @@ model AboutPageContent {
   ctaButtonHref       String
   updatedAt           DateTime @updatedAt
 }
+
+model AdIntegration {
+  id        String   @id @default(cuid())
+  platform  String   @unique
+  pixelId   String
+  isActive  Boolean  @default(false)
+  updatedAt DateTime @updatedAt
+}

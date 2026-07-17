@@ -34,7 +34,10 @@ const OPERATIONS_TABS = [
   { href: '/admin/customers', label: 'Customers', icon: <CustomersIcon /> }
 ];
 
-const ANALYTICS_TABS = [{ href: '/admin/analytics', label: 'Analytics', icon: <AnalyticsIcon /> }];
+const ANALYTICS_TABS = [
+  { href: '/admin/analytics', label: 'Analytics', icon: <AnalyticsIcon /> },
+  { href: '/admin/integrations', label: 'Marketing & Pixels', icon: <AnalyticsIcon /> }
+];
 
 const SUPER_ADMIN_TABS = [
   { href: '/admin/team', label: 'Team', icon: <TeamIcon /> },
