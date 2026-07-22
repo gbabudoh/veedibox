@@ -2,11 +2,9 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { UIProduct, LICENSE_MULT, LICENSE_META, UiLicense, formatUSD } from '@/lib/product-mapper';
+import { UIProduct, LICENSE_MULT, LICENSE_META, SELECTABLE_LICENSES, UiLicense, formatUSD } from '@/lib/product-mapper';
 import { useCart } from '@/lib/cart/CartContext';
 import { colors, fonts, radii, shadows } from '@/lib/theme';
-
-const LICENSE_KEYS: UiLicense[] = ['personal', 'commercial', 'extended'];
 
 export function LicenseSelector({ product }: { product: UIProduct }) {
   const [selected, setSelected] = useState<UiLicense>('personal');
@@ -27,7 +25,7 @@ export function LicenseSelector({ product }: { product: UIProduct }) {
     <div>
       <div style={{ fontWeight: 800, fontSize: 13.5, textTransform: 'uppercase', letterSpacing: 0.5, color: colors.textMuted2, marginBottom: 12 }}>Choose a licence</div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 26 }}>
-        {LICENSE_KEYS.map((key) => {
+        {SELECTABLE_LICENSES.map((key) => {
           const active = selected === key;
           const rowHovered = hoveredRow === key;
           const meta = LICENSE_META[key];
@@ -83,10 +81,28 @@ export function LicenseSelector({ product }: { product: UIProduct }) {
           );
         })}
       </div>
-      <div style={{ fontSize: 12, color: colors.textMuted2, marginBottom: 20, lineHeight: 1.5 }}>
-        Same high-res files at every tier — you&apos;re licensing usage rights, not file quality.
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 8,
+          fontSize: 13,
+          fontWeight: 600,
+          color: colors.primary,
+          background: colors.primarySofter,
+          border: `1px solid ${colors.primarySoft}`,
+          borderRadius: radii.md,
+          padding: '10px 12px',
+          marginBottom: 20,
+          lineHeight: 1.4
+        }}
+      >
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+          <path d="M20 6L9 17l-5-5" />
+        </svg>
+        You get the same files either way — this only covers how you&apos;re allowed to use them.
       </div>
-      
+
       <div style={{ fontSize: 32, fontWeight: 800, fontFamily: fonts.heading, letterSpacing: -0.5, marginBottom: 22 }}>
         ${formatUSD(licensedPriceCents)}
       </div>

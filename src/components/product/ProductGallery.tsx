@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { PreviewTile } from '@/components/product/PreviewTile';
-import { colors } from '@/lib/theme';
 
 function ZoomIcon() {
   return (
@@ -16,20 +15,12 @@ function ZoomIcon() {
 }
 
 export function ProductGallery({ previewUrl, baseHue, title }: { previewUrl: string | null; baseHue: number; title: string }) {
-  const thumbHues = [0, 1, 2, 3].map((i) => baseHue + i * 20);
-  const total = thumbHues.length;
-  const [selected, setSelected] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
-
-  const goPrev = () => setSelected((s) => (s - 1 + total) % total);
-  const goNext = () => setSelected((s) => (s + 1) % total);
 
   useEffect(() => {
     if (!lightboxOpen) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setLightboxOpen(false);
-      if (e.key === 'ArrowLeft') setSelected((s) => (s - 1 + total) % total);
-      if (e.key === 'ArrowRight') setSelected((s) => (s + 1) % total);
     };
     window.addEventListener('keydown', onKey);
     const prevOverflow = document.body.style.overflow;
@@ -38,27 +29,7 @@ export function ProductGallery({ previewUrl, baseHue, title }: { previewUrl: str
       window.removeEventListener('keydown', onKey);
       document.body.style.overflow = prevOverflow;
     };
-  }, [lightboxOpen, total]);
-
-  const navBtnStyle: React.CSSProperties = {
-    position: 'absolute',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    width: 44,
-    height: 44,
-    borderRadius: '50%',
-    border: 'none',
-    background: 'rgba(255,255,255,0.12)',
-    color: '#fff',
-    fontSize: 22,
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    transition: 'background 0.15s ease',
-    zIndex: 410,
-    backdropFilter: 'blur(8px)'
-  };
+  }, [lightboxOpen]);
 
   return (
     <div data-protected="true">
@@ -68,7 +39,7 @@ export function ProductGallery({ previewUrl, baseHue, title }: { previewUrl: str
         className="gallery-trigger"
         style={{ position: 'relative', display: 'block', width: '100%', padding: 0, border: 'none', background: 'none', cursor: 'zoom-in' }}
       >
-        <PreviewTile previewUrl={previewUrl} hue={thumbHues[selected]} alt={title} containerStyle={{ height: 480, borderRadius: 20 }} />
+        <PreviewTile previewUrl={previewUrl} hue={baseHue} alt={title} containerStyle={{ height: 480, borderRadius: 20 }} />
         <span
           className="gallery-zoom-hint"
           style={{
@@ -90,27 +61,6 @@ export function ProductGallery({ previewUrl, baseHue, title }: { previewUrl: str
           <ZoomIcon />
         </span>
       </button>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 10, marginTop: 12 }}>
-        {thumbHues.map((hue, i) => (
-          <button
-            key={i}
-            onClick={() => setSelected(i)}
-            aria-label={`View image ${i + 1}`}
-            aria-current={selected === i}
-            style={{
-              padding: 0,
-              background: 'none',
-              border: `2px solid ${selected === i ? colors.primary : 'transparent'}`,
-              borderRadius: 10,
-              cursor: 'pointer',
-              opacity: selected === i ? 1 : 0.75,
-              transition: 'opacity 0.15s ease, border-color 0.15s ease'
-            }}
-          >
-            <PreviewTile previewUrl={previewUrl} hue={hue} alt="" containerStyle={{ height: 80, borderRadius: 8 }} />
-          </button>
-        ))}
-      </div>
 
       {lightboxOpen && (
         <div
@@ -128,7 +78,6 @@ export function ProductGallery({ previewUrl, baseHue, title }: { previewUrl: str
             animation: 'fadeIn 0.15s ease'
           }}
         >
-          {/* Close button */}
           <button
             onClick={() => setLightboxOpen(false)}
             aria-label="Close"
@@ -152,49 +101,8 @@ export function ProductGallery({ previewUrl, baseHue, title }: { previewUrl: str
             ×
           </button>
 
-          {/* Previous arrow */}
-          <button
-            onClick={(e) => { e.stopPropagation(); goPrev(); }}
-            aria-label="Previous image"
-            style={{ ...navBtnStyle, left: 24 }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.12)'; }}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="15 18 9 12 15 6" />
-            </svg>
-          </button>
-
-          {/* Image */}
           <div onClick={(e) => e.stopPropagation()} style={{ width: '100%', maxWidth: 1000, maxHeight: '85vh', aspectRatio: '4 / 3', cursor: 'default' }}>
-            <PreviewTile previewUrl={previewUrl} hue={thumbHues[selected]} alt={title} containerStyle={{ height: '100%', borderRadius: 12 }} />
-          </div>
-
-          {/* Next arrow */}
-          <button
-            onClick={(e) => { e.stopPropagation(); goNext(); }}
-            aria-label="Next image"
-            style={{ ...navBtnStyle, right: 24 }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.12)'; }}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="9 18 15 12 9 6" />
-            </svg>
-          </button>
-
-          {/* Image counter */}
-          <div style={{
-            position: 'fixed',
-            bottom: 24,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            color: 'rgba(255,255,255,0.6)',
-            fontSize: 13,
-            fontWeight: 600,
-            letterSpacing: 0.5
-          }}>
-            {selected + 1} / {total}
+            <PreviewTile previewUrl={previewUrl} hue={baseHue} alt={title} containerStyle={{ height: '100%', borderRadius: 12 }} />
           </div>
         </div>
       )}

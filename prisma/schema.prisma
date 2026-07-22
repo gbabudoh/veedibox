@@ -65,10 +65,9 @@ model Product {
   style       String
   tags        String[]
   price       Int             // cents
-  formats     String
-  dimensions  String
   previewKey  String          // MinIO object key for preview image
   metadata    Json?           // category-specific extra attributes (see src/lib/category-fields.ts)
+  isAiGenerated Boolean       @default(false)
   status      String          @default("draft") // draft | published
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt

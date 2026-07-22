@@ -17,12 +17,11 @@ const productInput = z.object({
   category: z.enum(['WALL_ART', 'STOCK', 'TEMPLATES', 'BUNDLES']),
   style: z.string().min(1),
   price: z.number().int().nonnegative(),
-  formats: z.string().min(1),
-  dimensions: z.string().min(1),
   previewKey: z.string().min(1),
   status: z.enum(['draft', 'published']).optional(),
   tags: z.array(z.string()).optional(),
-  metadata: z.record(z.union([z.string(), z.number()])).optional(),
+  metadata: z.record(z.union([z.string(), z.number(), z.array(z.string())])).optional(),
+  isAiGenerated: z.boolean().optional(),
   files: z.array(fileInput).min(1)
 });
 

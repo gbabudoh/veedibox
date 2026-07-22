@@ -26,10 +26,9 @@ function emptyDraft(category: UrlCategory): ProductFormDraft {
     style: '',
     price: 20,
     description: '',
-    formats: '',
-    dimensions: '',
     previewKey: '',
     metadata: {},
+    isAiGenerated: false,
     files: []
   };
 }
@@ -61,10 +60,9 @@ export function AdminProductsClient({ category, initialProducts }: { category: U
       style: p.style,
       price: Number(formatUSD(p.priceCents)),
       description: p.description,
-      formats: p.formats,
-      dimensions: p.dimensions,
       previewKey: p.previewKey,
       metadata: p.metadata ?? {},
+      isAiGenerated: p.isAiGenerated,
       files: p.files.map((f) => ({ label: f.label, kind: f.kind, fileKey: f.fileKey, fileSizeMb: f.fileSizeMb }))
     });
     setError('');
@@ -82,10 +80,9 @@ export function AdminProductsClient({ category, initialProducts }: { category: U
       category: CATEGORY_TO_DB[draft.category],
       style: draft.style,
       price: Math.round(draft.price * 100),
-      formats: draft.formats,
-      dimensions: draft.dimensions,
       previewKey: draft.previewKey,
       metadata: draft.metadata,
+      isAiGenerated: draft.isAiGenerated,
       files: draft.files
     };
 

@@ -19,10 +19,9 @@ export interface ProductFormDraft {
   style: string;
   price: number;
   description: string;
-  formats: string;
-  dimensions: string;
   previewKey: string;
-  metadata: Record<string, string | number>;
+  metadata: Record<string, string | number | string[]>;
+  isAiGenerated: boolean;
   files: ProductFileDraft[];
 }
 
@@ -127,6 +126,37 @@ function FileRow({
         </button>
       </div>
       <UploadField label="" state={uploadState} hasValue={Boolean(file.fileKey)} onSelect={onUpload} />
+    </div>
+  );
+}
+
+function ListField({ items, placeholder, onChange }: { items: string[]; placeholder?: string; onChange: (items: string[]) => void }) {
+  const update = (idx: number, value: string) => onChange(items.map((it, i) => (i === idx ? value : it)));
+  const remove = (idx: number) => onChange(items.filter((_, i) => i !== idx));
+  const add = () => onChange([...items, '']);
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      {items.map((item, idx) => (
+        <div key={idx} style={{ display: 'flex', gap: 8 }}>
+          <Input value={item} onChange={(e) => update(idx, e.target.value)} placeholder={placeholder} />
+          <button
+            onClick={() => remove(idx)}
+            className="admin-btn"
+            title="Remove item"
+            style={{ border: `1px solid ${colors.dangerBorder}`, color: colors.danger, background: colors.surface, fontSize: 12, fontWeight: 700, padding: '0 12px', borderRadius: radii.md, cursor: 'pointer' }}
+          >
+            ×
+          </button>
+        </div>
+      ))}
+      <button
+        onClick={add}
+        className="admin-btn"
+        style={{ alignSelf: 'flex-start', border: `1px solid ${colors.border}`, background: colors.surface, fontSize: 12, fontWeight: 700, padding: '6px 10px', borderRadius: 7, cursor: 'pointer' }}
+      >
+        + Add item
+      </button>
     </div>
   );
 }
@@ -258,20 +288,19 @@ export function ProductModal({
               style={{ width: '100%', boxSizing: 'border-box', padding: '12px 14px', borderRadius: radii.md, border: `1px solid ${colors.borderStrong}`, fontSize: 14, fontFamily: 'inherit', resize: 'vertical' }}
             />
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-            <div>
-              <div style={fieldLabelStyle()}>Formats</div>
-              <Input value={draft.formats} onChange={(e) => onChange({ ...draft, formats: e.target.value })} placeholder="JPG, PNG" />
-            </div>
-            <div>
-              <div style={fieldLabelStyle()}>Dimensions</div>
-              <Input value={draft.dimensions} onChange={(e) => onChange({ ...draft, dimensions: e.target.value })} placeholder="3 sizes, up to 24x36in" />
-            </div>
-          </div>
           <div>
             <div style={fieldLabelStyle()}>Price (USD)</div>
             <Input type="number" value={draft.price} onChange={(e) => onChange({ ...draft, price: Number(e.target.value) || 0 })} />
           </div>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 13, fontWeight: 600, color: colors.text }}>
+            <input
+              type="checkbox"
+              checked={draft.isAiGenerated}
+              onChange={(e) => onChange({ ...draft, isAiGenerated: e.target.checked })}
+              style={{ width: 16, height: 16, cursor: 'pointer' }}
+            />
+            Generated with AI — disclose this to buyers on the product page
+          </label>
 
           {metadataFields.length > 0 && (
             <div style={{ borderTop: `1px solid ${colors.borderSubtle}`, paddingTop: 16 }}>
@@ -279,12 +308,12 @@ export function ProductModal({
                 {CATEGORY_LABELS[draft.category]} details
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-                {metadataFields.map((f) => (
+                {metadataFields.filter((f) => f.type !== 'list').map((f) => (
                   <div key={f.key}>
                     <div style={fieldLabelStyle()}>{f.label}</div>
                     {f.type === 'select' ? (
                       <select
-                        value={draft.metadata[f.key] ?? ''}
+                        value={(draft.metadata[f.key] as string) ?? ''}
                         onChange={(e) => setMetadataField(f.key, e.target.value)}
                         style={{ width: '100%', boxSizing: 'border-box', padding: '12px 14px', borderRadius: radii.md, border: `1px solid ${colors.borderStrong}`, fontSize: 14 }}
                       >
@@ -298,7 +327,7 @@ export function ProductModal({
                     ) : (
                       <Input
                         type={f.type === 'number' ? 'number' : 'text'}
-                        value={draft.metadata[f.key] ?? ''}
+                        value={(draft.metadata[f.key] as string | number) ?? ''}
                         onChange={(e) => setMetadataField(f.key, e.target.value)}
                         placeholder={f.placeholder}
                       />
@@ -306,6 +335,16 @@ export function ProductModal({
                   </div>
                 ))}
               </div>
+              {metadataFields.filter((f) => f.type === 'list').map((f) => (
+                <div key={f.key} style={{ marginTop: 12 }}>
+                  <div style={fieldLabelStyle()}>{f.label}</div>
+                  <ListField
+                    items={(draft.metadata[f.key] as string[]) ?? []}
+                    placeholder={f.placeholder}
+                    onChange={(items) => onChange({ ...draft, metadata: { ...draft.metadata, [f.key]: items } })}
+                  />
+                </div>
+              ))}
             </div>
           )}
 

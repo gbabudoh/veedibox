@@ -3,8 +3,11 @@ import { notFound } from 'next/navigation';
 import { ProductCard } from '@/components/product/ProductCard';
 import { prisma } from '@/lib/db/client';
 import { toUIProduct, CATEGORY_TO_DB, CATEGORY_LABELS, UrlCategory } from '@/lib/product-mapper';
+import { CATEGORY_METADATA_FIELDS } from '@/lib/category-fields';
 import { withPreviewUrls } from '@/lib/product-preview';
 import { colors, fonts, maxWidth, radii } from '@/lib/theme';
+
+const ORIENTATION_OPTIONS = CATEGORY_METADATA_FIELDS['wall-art'].find((f) => f.key === 'orientation')?.options ?? [];
 
 const CATEGORY_KEYS: (UrlCategory | 'all')[] = ['all', 'wall-art', 'stock', 'templates', 'bundles'];
 
@@ -85,11 +88,12 @@ function toArray(value: string | string[] | undefined): string[] {
   return Array.isArray(value) ? value : [value];
 }
 
-function buildStyleHref(category: string, currentStyles: string[], selectedUseCases: string[], style: string, search?: string) {
+function buildStyleHref(category: string, currentStyles: string[], selectedUseCases: string[], selectedOrientations: string[], style: string, search?: string) {
   const next = currentStyles.includes(style) ? currentStyles.filter((s) => s !== style) : [...currentStyles, style];
   const params = new URLSearchParams();
   next.forEach((s) => params.append('style', s));
   selectedUseCases.forEach((u) => params.append('usecase', u));
+  selectedOrientations.forEach((o) => params.append('orientation', o));
   if (search) {
     params.set('search', search);
   }
@@ -97,11 +101,25 @@ function buildStyleHref(category: string, currentStyles: string[], selectedUseCa
   return `/shop/${category}${qs ? `?${qs}` : ''}`;
 }
 
-function buildUseCaseHref(category: string, currentStyles: string[], selectedUseCases: string[], usecase: string, search?: string) {
+function buildUseCaseHref(category: string, currentStyles: string[], selectedUseCases: string[], selectedOrientations: string[], usecase: string, search?: string) {
   const next = selectedUseCases.includes(usecase) ? selectedUseCases.filter((u) => u !== usecase) : [...selectedUseCases, usecase];
   const params = new URLSearchParams();
   currentStyles.forEach((s) => params.append('style', s));
   next.forEach((u) => params.append('usecase', u));
+  selectedOrientations.forEach((o) => params.append('orientation', o));
+  if (search) {
+    params.set('search', search);
+  }
+  const qs = params.toString();
+  return `/shop/${category}${qs ? `?${qs}` : ''}`;
+}
+
+function buildOrientationHref(category: string, currentStyles: string[], selectedUseCases: string[], selectedOrientations: string[], orientation: string, search?: string) {
+  const next = selectedOrientations.includes(orientation) ? selectedOrientations.filter((o) => o !== orientation) : [...selectedOrientations, orientation];
+  const params = new URLSearchParams();
+  currentStyles.forEach((s) => params.append('style', s));
+  selectedUseCases.forEach((u) => params.append('usecase', u));
+  next.forEach((o) => params.append('orientation', o));
   if (search) {
     params.set('search', search);
   }
@@ -128,13 +146,14 @@ export default async function ShopCategoryPage({
   searchParams
 }: {
   params: { category: string };
-  searchParams: { style?: string | string[]; search?: string; usecase?: string | string[] };
+  searchParams: { style?: string | string[]; search?: string; usecase?: string | string[]; orientation?: string | string[] };
 }) {
   const category = params.category as UrlCategory | 'all';
   if (!CATEGORY_KEYS.includes(category)) notFound();
 
   const selectedStyles = toArray(searchParams.style);
   const selectedUseCases = toArray(searchParams.usecase);
+  const selectedOrientations = category === 'wall-art' ? toArray(searchParams.orientation) : [];
   const search = typeof searchParams.search === 'string' ? searchParams.search.trim() : undefined;
 
   // Build compound filter constraints for Prisma
@@ -144,6 +163,9 @@ export default async function ShopCategoryPage({
   }
   if (selectedStyles.length > 0) {
     andFilters.push({ style: { in: selectedStyles } });
+  }
+  if (selectedOrientations.length > 0) {
+    andFilters.push({ OR: selectedOrientations.map((o) => ({ metadata: { path: ['orientation'], equals: o } })) });
   }
   if (selectedUseCases.length > 0) {
     const useCaseFilters = selectedUseCases.flatMap((ucId) => {
@@ -242,19 +264,33 @@ export default async function ShopCategoryPage({
         <div style={{ fontWeight: 800, fontFamily: fonts.heading, fontSize: 14, marginBottom: 14, textTransform: 'uppercase', letterSpacing: 0.5, color: colors.textMuted }}>Style</div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 32 }}>
           {allStyles.map((s) => (
-            <Link key={s} href={buildStyleHref(category, selectedStyles, selectedUseCases, s, search)} style={styleChipStyle(selectedStyles.includes(s))}>
+            <Link key={s} href={buildStyleHref(category, selectedStyles, selectedUseCases, selectedOrientations, s, search)} style={styleChipStyle(selectedStyles.includes(s))}>
               {s}
               {selectedStyles.includes(s) && <span style={{ fontWeight: 800, fontSize: 13, color: colors.primary }}>×</span>}
             </Link>
           ))}
         </div>
 
+        {category === 'wall-art' && (
+          <>
+            <div style={{ fontWeight: 800, fontFamily: fonts.heading, fontSize: 14, marginBottom: 14, textTransform: 'uppercase', letterSpacing: 0.5, color: colors.textMuted }}>Orientation</div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 32 }}>
+              {ORIENTATION_OPTIONS.map((o) => (
+                <Link key={o} href={buildOrientationHref(category, selectedStyles, selectedUseCases, selectedOrientations, o, search)} style={styleChipStyle(selectedOrientations.includes(o))}>
+                  {o}
+                  {selectedOrientations.includes(o) && <span style={{ fontWeight: 800, fontSize: 13, color: colors.primary }}>×</span>}
+                </Link>
+              ))}
+            </div>
+          </>
+        )}
+
         <div style={{ fontWeight: 800, fontFamily: fonts.heading, fontSize: 14, marginBottom: 14, textTransform: 'uppercase', letterSpacing: 0.5, color: colors.textMuted }}>Use case</div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
           {USE_CASES.map((uc) => {
             const active = selectedUseCases.includes(uc.id);
             return (
-              <Link key={uc.id} href={buildUseCaseHref(category, selectedStyles, selectedUseCases, uc.id, search)} style={useCaseLinkStyle(active)}>
+              <Link key={uc.id} href={buildUseCaseHref(category, selectedStyles, selectedUseCases, selectedOrientations, uc.id, search)} style={useCaseLinkStyle(active)}>
                 <span style={{
                   width: 16,
                   height: 16,
@@ -291,7 +327,7 @@ export default async function ShopCategoryPage({
           <div style={{ fontSize: 13.5, color: colors.textMuted2, fontWeight: 600 }}>{filteredProducts.length} results</div>
         </div>
 
-        {(search || selectedStyles.length > 0 || selectedUseCases.length > 0) && (
+        {(search || selectedStyles.length > 0 || selectedUseCases.length > 0 || selectedOrientations.length > 0) && (
           <div
             style={{
               display: 'flex',
@@ -320,6 +356,11 @@ export default async function ShopCategoryPage({
               {selectedUseCases.length > 0 && (
                 <span style={{ background: '#fff', padding: '4px 10px', borderRadius: 6, border: `1px solid ${colors.border}` }}>
                   Use cases: <strong style={{ color: colors.primary }}>{selectedUseCases.map(id => USE_CASES.find(u => u.id === id)?.label).join(', ')}</strong>
+                </span>
+              )}
+              {selectedOrientations.length > 0 && (
+                <span style={{ background: '#fff', padding: '4px 10px', borderRadius: 6, border: `1px solid ${colors.border}` }}>
+                  Orientation: <strong style={{ color: colors.primary }}>{selectedOrientations.join(', ')}</strong>
                 </span>
               )}
             </div>

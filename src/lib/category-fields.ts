@@ -3,7 +3,7 @@ import { UrlCategory } from '@/lib/product-mapper';
 export interface CategoryField {
   key: string;
   label: string;
-  type: 'text' | 'number' | 'select';
+  type: 'text' | 'number' | 'select' | 'list';
   options?: string[];
   placeholder?: string;
 }
@@ -24,7 +24,6 @@ export const CATEGORY_METADATA_FIELDS: Record<UrlCategory, CategoryField[]> = {
     { key: 'editableLayers', label: 'Editable layers', type: 'number' }
   ],
   bundles: [
-    { key: 'itemCount', label: 'Items included', type: 'number' },
-    { key: 'discountPct', label: 'Bundle discount %', type: 'number' }
+    { key: 'includedItems', label: "What's included", type: 'list', placeholder: 'e.g. 10 Wall Art Prints' }
   ]
 };

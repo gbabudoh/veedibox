@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { LicenseSelector } from '@/components/product/LicenseSelector';
 import { ProductGallery } from '@/components/product/ProductGallery';
 import { prisma } from '@/lib/db/client';
-import { toUIProduct, CATEGORY_LABELS } from '@/lib/product-mapper';
+import { toUIProduct, CATEGORY_LABELS, getCategoryBadges, getIncludedItems } from '@/lib/product-mapper';
 import { withPreviewUrl } from '@/lib/product-preview';
 import { colors, fonts, maxWidth } from '@/lib/theme';
 
@@ -18,7 +18,7 @@ function FormatIcon() {
   );
 }
 
-function DimensionsIcon() {
+function SpecIcon() {
   return (
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
       <rect x="3" y="3" width="18" height="18" rx="2" />
@@ -37,11 +37,25 @@ function SizeIcon() {
   );
 }
 
+function CheckIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20 6L9 17l-5-5" />
+    </svg>
+  );
+}
+
 export default async function ProductPage({ params }: { params: { slug: string } }) {
-  const row = await prisma.product.findUnique({ where: { slug: params.slug }, include: { files: true } });
+  const row = await prisma.product.findUnique({ where: { slug: params.slug }, include: { files: true, creator: true } });
   if (!row || row.status !== 'published') notFound();
 
   const product = withPreviewUrl(toUIProduct(row));
+  const badges = [
+    { label: 'Formats', value: product.formats || '—', icon: <FormatIcon /> },
+    ...getCategoryBadges(product).map((b) => ({ ...b, icon: <SpecIcon /> })),
+    { label: 'File size', value: `${product.fileSizeMb} MB`, icon: <SizeIcon /> }
+  ];
+  const includedItems = getIncludedItems(product);
 
   const metaCardStyle: React.CSSProperties = {
     background: colors.primarySofter,
@@ -102,41 +116,67 @@ export default async function ProductPage({ params }: { params: { slug: string }
           <div style={{ fontSize: 13, fontWeight: 700, color: colors.primary, textTransform: 'uppercase', letterSpacing: 0.6, marginBottom: 10 }}>
             {product.style}
           </div>
-          <h1 style={{ fontFamily: fonts.heading, fontSize: 32, fontWeight: 800, letterSpacing: -0.5, margin: '0 0 14px' }}>{product.title}</h1>
+          <h1 style={{ fontFamily: fonts.heading, fontSize: 32, fontWeight: 800, letterSpacing: -0.5, margin: '0 0 10px' }}>{product.title}</h1>
+
+          {(product.creatorName || product.isAiGenerated) && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16, fontSize: 13, color: colors.textMuted }}>
+              {product.creatorName && <span>By {product.creatorName}</span>}
+              {product.isAiGenerated && (
+                <span
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 700,
+                    color: colors.textMuted,
+                    background: colors.surfaceMuted,
+                    border: `1px solid ${colors.border}`,
+                    padding: '3px 9px',
+                    borderRadius: 999,
+                    textTransform: 'uppercase',
+                    letterSpacing: 0.4
+                  }}
+                >
+                  Generated with AI
+                </span>
+              )}
+            </div>
+          )}
+
           <p style={{ fontSize: 15.5, lineHeight: 1.7, color: 'oklch(42% 0.02 265)', margin: '0 0 24px' }}>{product.description}</p>
-          
+
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(3,1fr)',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
               gap: 12,
-              marginBottom: 32
+              marginBottom: includedItems.length > 0 ? 20 : 32
             }}
           >
-            <div style={metaCardStyle}>
-              <div style={metaLabelStyle}>
-                <FormatIcon />
-                Formats
+            {badges.map((b) => (
+              <div key={b.label} style={metaCardStyle}>
+                <div style={metaLabelStyle}>
+                  {b.icon}
+                  {b.label}
+                </div>
+                <div style={{ fontWeight: 700, fontSize: 13.5, color: colors.text }}>{b.value}</div>
               </div>
-              <div style={{ fontWeight: 700, fontSize: 13.5, color: colors.text }}>{product.formats}</div>
-            </div>
-
-            <div style={metaCardStyle}>
-              <div style={metaLabelStyle}>
-                <DimensionsIcon />
-                Dimensions
-              </div>
-              <div style={{ fontWeight: 700, fontSize: 13.5, color: colors.text }}>{product.dimensions}</div>
-            </div>
-
-            <div style={metaCardStyle}>
-              <div style={metaLabelStyle}>
-                <SizeIcon />
-                File size
-              </div>
-              <div style={{ fontWeight: 700, fontSize: 13.5, color: colors.text }}>{product.fileSizeMb} MB</div>
-            </div>
+            ))}
           </div>
+
+          {includedItems.length > 0 && (
+            <div style={{ ...metaCardStyle, marginBottom: 32 }}>
+              <div style={metaLabelStyle}>What&apos;s included</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 4 }}>
+                {includedItems.map((item, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13.5, color: colors.text }}>
+                    <span style={{ color: colors.primary, display: 'flex' }}>
+                      <CheckIcon />
+                    </span>
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           <LicenseSelector product={product} />
         </div>
