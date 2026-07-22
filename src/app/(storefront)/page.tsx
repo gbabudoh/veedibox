@@ -7,6 +7,11 @@ import { withPreviewUrls, resolvePreviewUrl } from '@/lib/product-preview';
 import { getHomepageContent, HeroTile } from '@/lib/homepage';
 import { bgFor, colors, fonts, maxWidth } from '@/lib/theme';
 
+// Trending products, category counts, and hero content all change frequently and must never be
+// served stale from a build-time snapshot — also avoids the build attempting to statically
+// prerender this page (which was exhausting the DB's connection limit during `next build`).
+export const dynamic = 'force-dynamic';
+
 const COLLECTION_HUES: Record<UrlCategory, number> = {
   'wall-art': 32,
   stock: 24,

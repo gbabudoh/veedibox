@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { requireAdmin } from '@/lib/auth/requireAdmin';
 import { minioClient, BUCKETS } from '@/lib/storage/minio';
+import { isRateLimited } from '@/lib/rate-limit';
 
 function slugifyFilename(name: string) {
   return name
@@ -14,6 +15,10 @@ function slugifyFilename(name: string) {
 export async function POST(req: NextRequest) {
   const session = await requireAdmin();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  if (isRateLimited(`uploads:${(session.user as any).id}`, 30, 60 * 1000)) {
+    return NextResponse.json({ error: 'Too many uploads. Slow down and try again shortly.' }, { status: 429 });
+  }
 
   const form = await req.formData().catch(() => null);
   if (!form) return NextResponse.json({ error: 'Invalid form data' }, { status: 400 });

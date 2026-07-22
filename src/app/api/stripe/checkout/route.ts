@@ -4,13 +4,14 @@ import { prisma } from '@/lib/db/client';
 import { stripe } from '@/lib/stripe/client';
 import { requireSession } from '@/lib/auth/requireAdmin';
 import { LICENSE_MULT, LICENSE_TO_DB, UiLicense } from '@/lib/product-mapper';
+import { isRateLimited } from '@/lib/rate-limit';
 
 const checkoutSchema = z.object({
   items: z
     .array(
       z.object({
         productId: z.string().min(1),
-        license: z.enum(['personal', 'commercial', 'extended'])
+        license: z.enum(['personal', 'commercial'])
       })
     )
     .min(1)
@@ -19,6 +20,10 @@ const checkoutSchema = z.object({
 export async function POST(req: NextRequest) {
   const session = await requireSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  if (isRateLimited(`checkout:${(session.user as any).id}`, 10, 5 * 60 * 1000)) {
+    return NextResponse.json({ error: 'Too many attempts. Try again in a few minutes.' }, { status: 429 });
+  }
 
   const body = await req.json().catch(() => null);
   const parsed = checkoutSchema.safeParse(body);

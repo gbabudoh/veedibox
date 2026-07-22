@@ -2,6 +2,10 @@ import Link from 'next/link';
 import { getAboutContent } from '@/lib/about';
 import { colors, fonts, bgFor, radii, shadows } from '@/lib/theme';
 
+// Content is admin-editable and must reflect the latest save, not a build-time snapshot — also
+// avoids the build attempting to statically prerender this page against the live DB.
+export const dynamic = 'force-dynamic';
+
 function PaletteIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
